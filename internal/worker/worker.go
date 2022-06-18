@@ -43,15 +43,15 @@ func doTasksByWorkers(ctx context.Context,
 	workerIndex int,
 	taskCh chan func(ctx context.Context) error,
 	l *logger.Logger) error {
-	l.Debug("worker_%v started\n", workerIndex)
+	l.Debug("worker_%v started", workerIndex)
 workerLoop:
 	for {
 		select {
 		case <-ctx.Done():
-			l.Debug("worker_%v got context.Done\n", workerIndex)
+			l.Debug("worker_%v got context.Done", workerIndex)
 			break workerLoop
 		case workerTask := <-taskCh:
-			l.Debug("worker_%v is busy\n", workerIndex)
+			l.Debug("worker_%v is busy", workerIndex)
 			if err := workerTask(ctx); err != nil {
 				l.Error("worker_%v got error:%s", workerIndex, err.Error())
 				return err
