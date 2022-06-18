@@ -14,6 +14,11 @@ func Port(port string) Option {
 		s.server.Addr = net.JoinHostPort("", port)
 	}
 }
+func Addr(addr string) Option {
+	return func(s *Server) {
+		s.server.Addr = addr
+	}
+}
 
 // ReadTimeout -.
 func ReadTimeout(timeout time.Duration) Option {

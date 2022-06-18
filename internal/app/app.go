@@ -40,7 +40,7 @@ func Run(cfg *config.Config) {
 	handler := gin.New()
 	api.NewRouter(handler, l)
 	// TODO fix server addr
-	httpServer := httpserver.New(handler, httpserver.Port("cfg.HTTP.Port"))
+	httpServer := httpserver.New(handler, httpserver.Addr(cfg.HTTP.RunAddress))
 	// Waiting signal
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
@@ -50,8 +50,11 @@ func Run(cfg *config.Config) {
 	case err = <-httpServer.Notify():
 		l.Error(fmt.Errorf("app - Run - httpServer.Notify: %w", err))
 	}
-
-	defer cancel()
+	err = httpServer.Shutdown(ctx, cancel)
+	if err != nil {
+		l.Error(fmt.Errorf("app - Run - httpServer.Shutdown: %w", err))
+	}
+	// defer cancel()
 
 }
 
@@ -82,8 +85,8 @@ func RunFull(cfg *config.Config) {
 
 	}
 	// Shutdown
-	err = httpServer.Shutdown()
-	if err != nil {
-		l.Error(fmt.Errorf("app - Run - httpServer.Shutdown: %w", err))
-	}
+	// err = httpServer.Shutdown()
+	// if err != nil {
+	// 	l.Error(fmt.Errorf("app - Run - httpServer.Shutdown: %w", err))
+	// }
 }
