@@ -2,7 +2,6 @@ package app
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"os/signal"
 	"syscall"
@@ -16,8 +15,8 @@ import (
 )
 
 func Run(cfg *config.Config) {
-	// l := logger.New(cfg.Log.Level)
-	log.Println(cfg)
+	l := logger.New(cfg.Log.Level)
+	l.Debug(cfg)
 }
 
 func RunFull(cfg *config.Config) {

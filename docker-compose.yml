@@ -1,0 +1,40 @@
+version: "3.9"
+
+services:
+  postgresql:
+    image: docker.io/bitnami/postgresql:13
+    volumes:
+      - 'postgresql_data:/bitnami/postgresql'
+    ports:
+      - "5432:5432"
+    expose:
+      - 5432
+    env_file:
+      - ".env"
+    networks:
+      - gophermart-net
+
+  gophermart-api-server:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    container_name: gophermart-api-server
+    ports:
+      - "8080:8080"
+    expose:
+      - 8080
+    depends_on:
+      - postgresql
+    env_file:
+      - ".env"
+    networks:
+      - gophermart-net
+
+networks:
+  gophermart-net:
+    name: gophermart-net
+    driver: bridge
+
+volumes:
+  postgresql_data:
+    driver: local
