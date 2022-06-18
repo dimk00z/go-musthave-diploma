@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"os/signal"
 	"syscall"
@@ -15,6 +16,11 @@ import (
 )
 
 func Run(cfg *config.Config) {
+	// l := logger.New(cfg.Log.Level)
+	log.Println(cfg)
+}
+
+func RunFull(cfg *config.Config) {
 	l := logger.New(cfg.Log.Level)
 
 	// Repository
@@ -28,7 +34,7 @@ func Run(cfg *config.Config) {
 	handler := gin.New()
 	// api.NewRouter(handler, l, translationUseCase)
 	api.NewRouter(handler, l)
-	httpServer := httpserver.New(handler, httpserver.Port(cfg.HTTP.Port))
+	httpServer := httpserver.New(handler, httpserver.Port("cfg.HTTP.Port"))
 
 	// Waiting signal
 	interrupt := make(chan os.Signal, 1)

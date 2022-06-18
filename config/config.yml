@@ -3,7 +3,7 @@ app:
   version: '1.0.0'
 
 http:
-  port: '8080'
+  run_address: 'localhost:8080'
 
 logger:
   log_level: 'debug'
@@ -11,3 +11,15 @@ logger:
 
 postgres:
   pool_max: 2
+  pg_url: 'postgres://admin:password@localhost:5432/gophermart'
+
+security:
+# only for debug
+  secret_key: 'SECRET_KEY'
+
+workers:
+  workers_number: 10
+  pool_length: 15
+
+api:
+  accrual_system_address: 'pass'
