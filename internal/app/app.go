@@ -22,7 +22,8 @@ import (
 func Run(cfg *config.Config) {
 	l := logger.New(cfg.Log.Level)
 	l.Debug(cfg)
-
+	// Migrate
+	doMigrations(cfg.PG.URL, l)
 	// Workers pool
 	wp := worker.GetWorkersPool(cfg.Workers, l)
 	defer wp.Close()
