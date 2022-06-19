@@ -7,7 +7,6 @@ import (
 
 	migrate "github.com/golang-migrate/migrate/v4"
 
-	// migrate tools
 	"github.com/dimk00z/go-musthave-diploma/pkg/logger"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"

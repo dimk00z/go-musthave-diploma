@@ -1,3 +1,5 @@
-DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS public."user";
 
 DROP TABLE IF EXISTS order;
+
+DROP TABLE IF EXISTS balance;
