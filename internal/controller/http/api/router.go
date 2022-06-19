@@ -1,19 +1,18 @@
 package api
 
 import (
-	"net/http"
-
+	"github.com/dimk00z/go-musthave-diploma/internal/usecase"
 	"github.com/dimk00z/go-musthave-diploma/pkg/logger"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 )
 
-func NewRouter(handler *gin.Engine,
-	l logger.Interface) {
-	handler.Use(gin.Logger())
-	handler.Use(gin.Recovery())
-	handler.Use(gzip.Gzip(gzip.DefaultCompression))
-
+func NewRouter(router *gin.Engine,
+	l logger.Interface, uc usecase.IGopherMart) {
+	router.Use(gin.Logger())
+	router.Use(gin.Recovery())
+	router.Use(gzip.Gzip(gzip.DefaultCompression))
+	// Swagger
 	// POST /api/user/register — регистрация пользователя;
 	// POST /api/user/login — аутентификация пользователя;
 
@@ -24,42 +23,8 @@ func NewRouter(handler *gin.Engine,
 	// POST /api/user/balance/withdraw — запрос на списание баллов с накопительного счёта в счёт оплаты нового заказа;
 	// GET /api/user/balance/withdrawals — получение информации о выводе средств с накопительного счёта пользователем.
 	// Routers
-	api := handler.Group("/api")
-	userAPI := api.Group("/user")
+	apiRouter := router.Group("/api")
 	{
-		userAPI.POST("/register", func(c *gin.Context) {
-			message := "test"
-			c.String(http.StatusOK, message)
-		})
-		userAPI.POST("/login", func(c *gin.Context) {
-			message := "test"
-			c.String(http.StatusOK, message)
-		})
-	}
-	ordersAPI := userAPI.Group("/orders")
-	{
-		ordersAPI.GET("/", func(c *gin.Context) {
-			message := "test"
-			c.String(http.StatusOK, message)
-		})
-		ordersAPI.POST("/", func(c *gin.Context) {
-			message := "test"
-			c.String(http.StatusOK, message)
-		})
-	}
-	balanceAPI := userAPI.Group("/balance")
-	{
-		balanceAPI.GET("/", func(c *gin.Context) {
-			message := "test"
-			c.String(http.StatusOK, message)
-		})
-		balanceAPI.GET("/withdrawals", func(c *gin.Context) {
-			message := "test"
-			c.String(http.StatusOK, message)
-		})
-		balanceAPI.POST("/withdraw", func(c *gin.Context) {
-			message := "test"
-			c.String(http.StatusOK, message)
-		})
+		newGopherMartRoutes(apiRouter, uc, l)
 	}
 }
