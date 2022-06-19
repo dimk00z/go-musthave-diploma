@@ -9,8 +9,7 @@ import (
 
 func NewRouter(router *gin.Engine,
 	l logger.Interface, uc usecase.IGopherMart) {
-	router.Use(gin.Logger())
-	router.Use(gin.Recovery())
+
 	router.Use(gzip.Gzip(gzip.DefaultCompression))
 	// Swagger
 	// POST /api/user/register — регистрация пользователя;

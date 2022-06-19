@@ -117,6 +117,10 @@
 			"request": {
 				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"login\": \"user_login\",\r\n    \"password\": \"user_password\"\r\n} "
+				},
 				"url": {
 					"raw": "http://localhost:8080/api/user/register",
 					"protocol": "http",
