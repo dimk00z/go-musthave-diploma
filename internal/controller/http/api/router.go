@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/dimk00z/go-musthave-diploma/pkg/logger"
-
+	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 )
 
@@ -12,6 +12,7 @@ func NewRouter(handler *gin.Engine,
 	l logger.Interface) {
 	handler.Use(gin.Logger())
 	handler.Use(gin.Recovery())
+	handler.Use(gzip.Gzip(gzip.DefaultCompression))
 
 	// POST /api/user/register — регистрация пользователя;
 	// POST /api/user/login — аутентификация пользователя;
