@@ -3,24 +3,28 @@ package webapi
 import (
 	"context"
 
+	"github.com/dimk00z/go-musthave-diploma/config"
 	"github.com/dimk00z/go-musthave-diploma/internal/entity"
 )
 
-type GopherMartRepoWebAPI struct {
+type GopherMartWebAPI struct {
+	cfg *config.Config
 }
 
-func New() *GopherMartRepoWebAPI {
-	return &GopherMartRepoWebAPI{}
+func New(cfg *config.Config) *GopherMartWebAPI {
+	return &GopherMartWebAPI{
+		cfg: cfg,
+	}
 }
 
-func (g *GopherMartRepoWebAPI) RegisterUser(
+func (g *GopherMartWebAPI) RegisterUser(
 	ctx context.Context,
 	userName string,
 	password string) (user entity.User, err error) {
 	return
 }
 
-func (g *GopherMartRepoWebAPI) Login(ctx context.Context,
+func (g *GopherMartWebAPI) Login(ctx context.Context,
 	userName string,
 	password string) (user entity.User, err error) {
 	return

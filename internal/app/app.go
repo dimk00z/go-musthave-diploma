@@ -43,7 +43,8 @@ func Run(cfg *config.Config) {
 	// Use case
 	gophermartUseCase := usecase.New(
 		repo.New(pg),
-		webapi.New(),
+		webapi.New(cfg),
+		l,
 	)
 
 	// HTTP Server

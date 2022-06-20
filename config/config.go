@@ -39,7 +39,8 @@ type (
 	}
 
 	Security struct {
-		SecretKey string `env-required:"true" yaml:"secret_key" env:"SECRET_KEY"`
+		SecretKey         string `env-required:"true" yaml:"secret_key" env:"SECRET_KEY"`
+		TokenHourLifespan int    `env-required:"true" yaml:"token_hour_lifespan" env:"TOKEN_HOUR_LIFESPAN"`
 	}
 
 	Workers struct {
