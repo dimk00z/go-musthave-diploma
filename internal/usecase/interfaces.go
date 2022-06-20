@@ -17,10 +17,9 @@ type IGopherMart interface {
 		password string) (user entity.User, err error)
 }
 type IGopherMartRepo interface {
-	RegisterUser(
+	SaveUser(
 		ctx context.Context,
-		userName string,
-		password string) (user entity.User, err error)
+		userID, userName, password string) (user entity.User, err error)
 	GetUser(
 		ctx context.Context,
 		userName string,
@@ -35,4 +34,6 @@ type IGopherMartWebAPI interface {
 	Login(ctx context.Context,
 		userName string,
 		password string) (user entity.User, err error)
+	GetPasswordHash(
+		password string) (passwordHash string, err error)
 }

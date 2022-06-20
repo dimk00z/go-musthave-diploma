@@ -7,11 +7,11 @@ import (
 )
 
 type gophermartHandlers struct {
-	uc usecase.IGopherMartRepo
+	uc usecase.IGopherMart
 	l  logger.Interface
 }
 
-func newGopherMartRoutes(api *gin.RouterGroup, uc usecase.IGopherMartRepo, l logger.Interface) {
+func newGopherMartRoutes(api *gin.RouterGroup, uc usecase.IGopherMart, l logger.Interface) {
 	handlers := &gophermartHandlers{uc, l}
 
 	userAPI := api.Group("/user")

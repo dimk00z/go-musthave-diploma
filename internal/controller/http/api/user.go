@@ -1,8 +1,11 @@
 package api
 
 import (
+	"errors"
+	"log"
 	"net/http"
 
+	"github.com/dimk00z/go-musthave-diploma/internal/usecase"
 	"github.com/gin-gonic/gin"
 )
 
@@ -28,6 +31,15 @@ func (h *gophermartHandlers) userRegister(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	c.JSON(http.StatusOK, gin.H{"message": "validated!"})
+	user, err := h.uc.RegisterUser(c.Request.Context(), input.Login, input.Password)
+	log.Println(user, err)
+	if errors.Is(err, usecase.ErrUserAlreadyExists) {
+		c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
+		return
+	}
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "registration success!"})
 }
