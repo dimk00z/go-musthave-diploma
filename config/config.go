@@ -83,19 +83,19 @@ func NewConfig() (*Config, error) {
 		cfg = &Config{}
 		err = cleanenv.ReadConfig("../../config/config.yml", cfg)
 		if err != nil {
-			log.Fatalf("config error: %w", err)
+			log.Fatalf("config error: %v", err)
 			return
 		}
 
 		err = cleanenv.ReadEnv(cfg)
 		if err != nil {
-			log.Fatalf("readenv error: %w", err)
+			log.Fatalf("readenv error: %v", err)
 			return
 		}
 		cfg.checkFlags()
 		url, err := tld.Parse(cfg.HTTP.RunAddress)
 		if err != nil {
-			log.Fatalf("domain parsing error: %w", err)
+			log.Fatalf("domain parsing error: %v", err)
 			return
 		}
 		cfg.HTTP.DomainName = url.Domain
