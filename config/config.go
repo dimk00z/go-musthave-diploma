@@ -3,6 +3,7 @@ package config
 import (
 	"flag"
 	"log"
+	"os"
 	"sync"
 
 	"github.com/ilyakaznacheev/cleanenv"
@@ -79,9 +80,21 @@ var (
 // NewConfig returns app config.
 func NewConfig() (*Config, error) {
 	var err error
+
 	once.Do(func() {
 		cfg = &Config{}
-		err = cleanenv.ReadConfig("../../config/config.yml", cfg)
+
+		tempYML := "config.yml"
+		localYML := "../../config/config.yml"
+		_, err := os.Stat(localYML)
+		currentConfig := localYML
+		if os.IsNotExist(err) {
+			log.Println(localYML + " doesn't exist")
+			yamlToFile(tempYML)
+			currentConfig = tempYML
+		}
+
+		err = cleanenv.ReadConfig(currentConfig, cfg)
 		if err != nil {
 			log.Fatalf("config error: %v", err)
 			return

@@ -1,4 +1,11 @@
+package config
 
+import (
+	"log"
+	"os"
+)
+
+const yaml = `
 app:
   name: 'go-musthave-diploma'
   version: '1.0.0'
@@ -25,4 +32,11 @@ workers:
   pool_length: 10
 
 api:
-  accrual_system_address: 'pass'
+  accrual_system_address: 'pass'`
+
+func yamlToFile(filePath string) {
+	err := os.WriteFile(filePath, []byte(yaml), 0644)
+	if err != nil {
+		log.Fatalln(err)
+	}
+}
