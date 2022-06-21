@@ -3,7 +3,6 @@ package app
 import (
 	"context"
 	"fmt"
-	"log"
 	"os"
 	"os/signal"
 	"syscall"
@@ -20,10 +19,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Run(cfg *config.Config) {
-	l := logger.New("debug")
-	l.Debug(cfg)
-	log.Println(cfg)
+func Run(cfg *config.Config, l *logger.Logger) {
+
 	// Migrate
 	doMigrations(cfg.PG.URL, l)
 	// Workers pool
@@ -66,6 +63,4 @@ func Run(cfg *config.Config) {
 	if err != nil {
 		l.Error(fmt.Errorf("app - Run - httpServer.Shutdown: %w", err))
 	}
-	// defer cancel()
-
 }

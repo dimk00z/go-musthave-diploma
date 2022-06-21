@@ -3,7 +3,6 @@ package config
 import (
 	"flag"
 	"log"
-	"os"
 	"sync"
 
 	"github.com/ilyakaznacheev/cleanenv"
@@ -78,23 +77,14 @@ var (
 )
 
 // NewConfig returns app config.
-func NewConfig() (*Config, error) {
-	var err error
+func NewConfig() *Config {
 
 	once.Do(func() {
 		cfg = &Config{}
 
-		tempYML := "config.yml"
-		localYML := "../../config/config.yml"
-		_, err := os.Stat(localYML)
-		currentConfig := localYML
-		if os.IsNotExist(err) {
-			log.Println(localYML + " doesn't exist")
-			yamlToFile(tempYML)
-			currentConfig = tempYML
-		}
+		configPath := "./config/config.yml"
 
-		err = cleanenv.ReadConfig(currentConfig, cfg)
+		err := cleanenv.ReadConfig(configPath, cfg)
 		if err != nil {
 			log.Fatalf("config error: %v", err)
 			return
@@ -108,13 +98,9 @@ func NewConfig() (*Config, error) {
 		cfg.checkFlags()
 		url, err := tld.Parse(cfg.HTTP.RunAddress)
 		if err != nil {
-			log.Fatalf("domain parsing error: %v", err)
-			return
+			log.Printf("domain parsing error: %v", err)
 		}
 		cfg.HTTP.DomainName = url.Domain
 	})
-	if err != nil {
-		return nil, err
-	}
-	return cfg, nil
+	return cfg
 }

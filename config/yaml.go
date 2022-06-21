@@ -1,5 +1,6 @@
 package config
 
+// TODO REMOVE
 import (
 	"log"
 	"os"

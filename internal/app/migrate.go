@@ -30,7 +30,8 @@ func doMigrations(databaseURL string, l *logger.Logger) {
 	)
 
 	for attempts > 0 {
-		m, err = migrate.New("file://../../migrations", databaseURL)
+		m, err = migrate.New("file://migrations", databaseURL)
+		// m, err = migrate.New("file://../../migrations", databaseURL)
 		if err == nil {
 			break
 		}

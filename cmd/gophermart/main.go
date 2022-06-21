@@ -1,19 +1,16 @@
 package main
 
 import (
-	"log"
-
 	"github.com/dimk00z/go-musthave-diploma/config"
 	"github.com/dimk00z/go-musthave-diploma/internal/app"
+	"github.com/dimk00z/go-musthave-diploma/pkg/logger"
 )
 
 func main() {
-	log.Println("log test")
 	// Configuration
-	cfg, err := config.NewConfig()
-	if err != nil {
-		log.Fatalf("Config error: %s", err)
-	}
+	cfg := config.NewConfig()
+	l := logger.New("DEBUG")
+	l.Debug(cfg)
 	// Run
-	app.Run(cfg)
+	app.Run(cfg, l)
 }
