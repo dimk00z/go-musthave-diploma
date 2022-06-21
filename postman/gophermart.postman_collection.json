@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "89300afa-a4a8-4f11-b82d-b7e6a1f3e088",
+		"_postman_id": "6e8efd3e-d3a7-45de-bcfd-c550411e663e",
 		"name": "gophermart",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -27,10 +27,41 @@
 			"response": []
 		},
 		{
+			"name": "user/orders/single",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/user/orders/12345678903",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"user",
+						"orders",
+						"12345678903"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "user/orders",
 			"request": {
 				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "12345678903",
+					"options": {
+						"raw": {
+							"language": "text"
+						}
+					}
+				},
 				"url": {
 					"raw": "http://localhost:8080/api/user/orders",
 					"protocol": "http",
@@ -142,6 +173,10 @@
 			"request": {
 				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"login\": \"user_login\",\n    \"password\": \"user_password\"\n} "
+				},
 				"url": {
 					"raw": "http://localhost:8080/api/user/login",
 					"protocol": "http",
