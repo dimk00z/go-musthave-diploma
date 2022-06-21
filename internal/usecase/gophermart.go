@@ -29,6 +29,9 @@ func (uc *GopherMartUseCase) RegisterUser(
 	password string) (user entity.User, err error) {
 
 	hashedPassword, err := uc.webAPI.GetPasswordHash(password)
+	if err != nil {
+		return
+	}
 	log.Println(userName, hashedPassword)
 	userID := uuid.NewV4().String()
 	user, err = uc.repo.SaveUser(ctx, userID, userName, hashedPassword)

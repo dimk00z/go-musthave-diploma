@@ -2,7 +2,7 @@ package config
 
 import (
 	"flag"
-	"fmt"
+	"log"
 	"sync"
 
 	"github.com/ilyakaznacheev/cleanenv"
@@ -83,23 +83,22 @@ func NewConfig() (*Config, error) {
 		cfg = &Config{}
 		err = cleanenv.ReadConfig("../../config/config.yml", cfg)
 		if err != nil {
-			err = fmt.Errorf("config error: %w", err)
+			log.Fatalf("config error: %w", err)
 			return
 		}
 
 		err = cleanenv.ReadEnv(cfg)
 		if err != nil {
-			err = fmt.Errorf("readenv error: %w", err)
+			log.Fatalf("readenv error: %w", err)
 			return
 		}
 		cfg.checkFlags()
 		url, err := tld.Parse(cfg.HTTP.RunAddress)
 		if err != nil {
-			err = fmt.Errorf("domain parsing error: %w", err)
+			log.Fatalf("domain parsing error: %w", err)
 			return
 		}
 		cfg.HTTP.DomainName = url.Domain
-		return
 	})
 	if err != nil {
 		return nil, err

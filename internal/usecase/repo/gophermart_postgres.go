@@ -52,9 +52,9 @@ func (r *GopherMartRepo) SaveUser(
 
 func (r *GopherMartRepo) createBalance(ctx context.Context, userID string) (err error) {
 	//TODO Add balance
-	if err != nil {
-		err = fmt.Errorf("GopherMartRepo - createBalance - r.Builder: %w", err)
-	}
+	// if err != nil {
+	// 	err = fmt.Errorf("GopherMartRepo - createBalance - r.Builder: %w", err)
+	// }
 	return
 }
 func (r *GopherMartRepo) GetUser(
@@ -82,7 +82,6 @@ func (r *GopherMartRepo) GetUser(
 			err = fmt.Errorf("GopherMartRepo - GetUser - rows.Scan: %w", err)
 			return
 		}
-		break
 	}
 	user.Login = userName
 	return
