@@ -3,6 +3,7 @@ package app
 import (
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	migrate "github.com/golang-migrate/migrate/v4"
@@ -18,9 +19,10 @@ const (
 )
 
 func doMigrations(databaseURL string, l *logger.Logger) {
-
-	databaseURL += "?sslmode=disable"
-
+	sslMode := "?sslmode=disable"
+	if !strings.Contains(databaseURL, sslMode) {
+		databaseURL += sslMode
+	}
 	var (
 		attempts = _defaultAttempts
 		err      error

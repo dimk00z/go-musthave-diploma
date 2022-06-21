@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"fmt"
+	"log"
 	"os"
 	"os/signal"
 	"syscall"
@@ -22,6 +23,7 @@ import (
 func Run(cfg *config.Config) {
 	l := logger.New(cfg.Log.Level)
 	l.Debug(cfg)
+	log.Println(cfg)
 	// Migrate
 	doMigrations(cfg.PG.URL, l)
 	// Workers pool
