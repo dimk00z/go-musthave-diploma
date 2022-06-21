@@ -56,6 +56,8 @@ func Run(cfg *config.Config, l *logger.Logger) {
 	select {
 	case s := <-interrupt:
 		l.Info("app - Run - signal: " + s.String())
+		cancel()
+	case <-ctx.Done():
 	case err = <-httpServer.Notify():
 		l.Error(fmt.Errorf("app - Run - httpServer.Notify: %w", err))
 	}
