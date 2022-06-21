@@ -36,6 +36,7 @@ func newGopherMartRoutes(api *gin.RouterGroup, uc usecase.IGopherMart, l logger.
 	{
 		ordersAPI.GET("/", handlers.getOrders)
 		ordersAPI.POST("/", handlers.postOrders)
+		ordersAPI.GET("/:order", handlers.getOrder)
 	}
 	balanceAPI := userAPI.Group("/balance")
 	{
