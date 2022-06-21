@@ -22,10 +22,15 @@ func (h *gophermartHandlers) userLogin(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	token, err := h.uc.Login(c.Request.Context(), input.Login, input.Password)
+	user, err := h.uc.Login(c.Request.Context(), input.Login, input.Password)
 
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "username or password is incorrect."})
+		return
+	}
+	token, err := h.setCookieToken(c, user.UserID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -48,5 +53,24 @@ func (h *gophermartHandlers) userRegister(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+	_, err = h.setCookieToken(c, user.UserID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{"message": "registration success!"})
+
+}
+
+func (h *gophermartHandlers) setCookieToken(c *gin.Context, userID string) (token string, err error) {
+	token, err = h.uc.GetUserToken(userID)
+	c.SetCookie(
+		h.cfg.Security.CookieTokenName,
+		token,
+		h.cfg.Security.TokenHourLifespan*3600,
+		"/",
+		h.cfg.HTTP.DomainName,
+		false,
+		true)
+	return
 }

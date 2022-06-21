@@ -27,6 +27,7 @@ func (uc *GopherMartUseCase) RegisterUser(
 	ctx context.Context,
 	userName string,
 	password string) (user entity.User, err error) {
+
 	hashedPassword, err := uc.webAPI.GetPasswordHash(password)
 	log.Println(userName, hashedPassword)
 	userID := uuid.NewV4().String()
@@ -40,32 +41,28 @@ func (uc *GopherMartUseCase) RegisterUser(
 func (uc *GopherMartUseCase) Login(
 	ctx context.Context,
 	userName string,
-	password string) (token string, err error) {
-	user, err := uc.repo.GetUser(ctx, userName)
+	password string) (user entity.User, err error) {
+	user, err = uc.repo.GetUser(ctx, userName)
 	if err != nil {
 		return
 	}
-	uc.l.Info("GopherMartUseCase - Login - : " + user.UserId + " " + " " + user.Login)
+	uc.l.Info("GopherMartUseCase - Login - : " + user.UserID + " " + " " + user.Login)
 
 	err = uc.webAPI.VerifyPassword(password, user.Password)
 
 	if err != nil {
 		return
 	}
-	token, err = uc.webAPI.GenerateToken(user.UserId)
-	if err != nil {
-		return "", err
-	}
-	uc.l.Info("GopherMartUseCase - Login - token: " + token)
 	return
 }
 
-func (uc *GopherMartUseCase) GetUser(
-	ctx context.Context,
-	userName string) (user entity.User, err error) {
-	// if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
-	// 	err = ErrWrongPassword
-	// 	return
-	// }
-	return
+func (uc *GopherMartUseCase) GetUserToken(
+	userID string) (token string, err error) {
+
+	return uc.webAPI.GenerateToken(userID)
+}
+
+func (uc *GopherMartUseCase) ParseToken(tokenString string) (userID string, err error) {
+
+	return uc.webAPI.ParseToken(tokenString)
 }

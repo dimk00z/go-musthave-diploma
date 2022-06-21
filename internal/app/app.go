@@ -49,7 +49,7 @@ func Run(cfg *config.Config) {
 
 	// HTTP Server
 	mainRouter := gin.Default()
-	api.NewRouter(mainRouter, l, gophermartUseCase)
+	api.NewRouter(mainRouter, l, gophermartUseCase, cfg)
 	httpServer := httpserver.New(mainRouter, httpserver.Addr(cfg.HTTP.RunAddress))
 	// Waiting signal
 	interrupt := make(chan os.Signal, 1)

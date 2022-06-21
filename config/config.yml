@@ -17,6 +17,7 @@ security:
 # only for debug
   secret_key: 'SECRET_KEY'
   token_hour_lifespan: 96
+  cookie_token_name: 'gophermart_token'
 
 workers:
   workers_number: 5

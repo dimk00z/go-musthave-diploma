@@ -43,7 +43,7 @@ func (r *GopherMartRepo) SaveUser(
 		err = fmt.Errorf("GopherMartRepo - SaveUser - r.Builder: %w", err)
 		return
 	}
-	user.UserId = userID
+	user.UserID = userID
 	user.Login = userName
 	err = r.createBalance(ctx, userID)
 	return
@@ -77,7 +77,7 @@ func (r *GopherMartRepo) GetUser(
 	}
 	defer rows.Close()
 	for rows.Next() {
-		err = rows.Scan(&user.UserId, &user.Password)
+		err = rows.Scan(&user.UserID, &user.Password)
 		if err != nil {
 			err = fmt.Errorf("GopherMartRepo - GetUser - rows.Scan: %w", err)
 			return

@@ -8,6 +8,11 @@ import (
 
 func (h gophermartHandlers) getOrders(c *gin.Context) {
 	message := "I'm getOrders"
+
+	userID := c.GetString("UserIDCtx")
+	if len(userID) > 0 {
+		message += "userid " + userID
+	}
 	c.String(http.StatusOK, message)
 }
 

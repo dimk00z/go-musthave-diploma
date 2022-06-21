@@ -11,13 +11,13 @@ type IGopherMart interface {
 		ctx context.Context,
 		userName string,
 		password string) (user entity.User, err error)
-	GetUser(
-		ctx context.Context,
-		userName string) (user entity.User, err error)
 	Login(
 		ctx context.Context,
 		userName string,
-		password string) (token string, err error)
+		password string) (user entity.User, err error)
+	GetUserToken(
+		userID string) (token string, err error)
+	ParseToken(tokenString string) (userID string, err error)
 }
 type IGopherMartRepo interface {
 	SaveUser(

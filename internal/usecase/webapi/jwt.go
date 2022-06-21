@@ -2,12 +2,10 @@ package webapi
 
 import (
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/dimk00z/go-musthave-diploma/internal/usecase"
-	"github.com/gin-gonic/gin"
 )
 
 type JWTClaim struct {
@@ -43,18 +41,6 @@ func (g *GopherMartWebAPI) CheckToken(tokenString string) error {
 	})
 	return err
 
-}
-
-func (g *GopherMartWebAPI) ExtractToken(c *gin.Context) string {
-	token := c.Query("token")
-	if token != "" {
-		return token
-	}
-	bearerToken := c.Request.Header.Get("Authorization")
-	if len(strings.Split(bearerToken, " ")) == 2 {
-		return strings.Split(bearerToken, " ")[1]
-	}
-	return ""
 }
 
 func (g *GopherMartWebAPI) ParseToken(tokenString string) (userID string, err error) {

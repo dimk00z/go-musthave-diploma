@@ -6,6 +6,7 @@ import (
 	"sync"
 
 	"github.com/ilyakaznacheev/cleanenv"
+	tld "github.com/jpillora/go-tld"
 )
 
 type (
@@ -27,6 +28,7 @@ type (
 
 	HTTP struct {
 		RunAddress string `env-required:"true" yaml:"run_address" env:"RUN_ADDRESS"`
+		DomainName string
 	}
 
 	Log struct {
@@ -41,6 +43,7 @@ type (
 	Security struct {
 		SecretKey         string `env-required:"true" yaml:"secret_key" env:"SECRET_KEY"`
 		TokenHourLifespan int    `env-required:"true" yaml:"token_hour_lifespan" env:"TOKEN_HOUR_LIFESPAN"`
+		CookieTokenName   string `env-required:"true" yaml:"cookie_token_name" env:"COOKIE_TOKEN_NAME"`
 	}
 
 	Workers struct {
@@ -86,10 +89,17 @@ func NewConfig() (*Config, error) {
 
 		err = cleanenv.ReadEnv(cfg)
 		if err != nil {
+			err = fmt.Errorf("readenv error: %w", err)
 			return
 		}
 		cfg.checkFlags()
-
+		url, err := tld.Parse(cfg.HTTP.RunAddress)
+		if err != nil {
+			err = fmt.Errorf("domain parsing error: %w", err)
+			return
+		}
+		cfg.HTTP.DomainName = url.Domain
+		return
 	})
 	if err != nil {
 		return nil, err
