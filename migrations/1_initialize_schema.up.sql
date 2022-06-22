@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS "public"."user" (
 
 CREATE TABLE IF NOT EXISTS "public"."order" (
     order_id uuid DEFAULT uuid_generate_v4() NOT NULL,
-    order_number integer NOT NULL,
+    order_number BIGINT NOT NULL,
     status varchar(50) DEFAULT 'NEW' NOT NULL,
     uploaded_at timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
     accrual real DEFAULT 0 NOT NULL,

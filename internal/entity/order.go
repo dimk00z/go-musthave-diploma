@@ -1,8 +1,9 @@
 package entity
 
 type Order struct {
-	OrderID     string  `json:"order"`
+	OrderID     string  `json:"order_id"`
+	OrderNumber string  `json:"number"`
 	Status      string  `json:"status"`
-	Sum         float32 `json:"sum"`
-	ProcessedAt string  `json:"processed_at"`
+	Accrual     float32 `json:"accrual"`
+	ProcessedAt int64   `json:"processed_at"`
 }

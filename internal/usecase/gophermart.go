@@ -73,6 +73,12 @@ func (uc *GopherMartUseCase) ParseToken(tokenString string) (userID string, err 
 	return uc.webAPI.ParseToken(tokenString)
 }
 
-func (uc *GopherMartUseCase) NewOrder(userID, orderNumber string) (order entity.Order, err error) {
+func (uc *GopherMartUseCase) NewOrder(ctx context.Context, userID, orderNumber string) (order entity.Order, err error) {
+	orderID := uuid.NewV4().String()
+	order, err = uc.repo.NewOrder(ctx, userID, orderID, orderNumber)
 	return
+}
+
+func (uc *GopherMartUseCase) GetOrders(ctx context.Context, userID string) (orders []entity.Order, err error) {
+	return uc.repo.GetOrders(ctx, userID)
 }

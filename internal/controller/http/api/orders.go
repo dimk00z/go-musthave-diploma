@@ -11,13 +11,19 @@ import (
 )
 
 func (h gophermartHandlers) getOrders(c *gin.Context) {
-	message := "I'm getOrders"
 
 	userID := c.GetString("UserIDCtx")
-	if len(userID) > 0 {
-		message += "userid " + userID
+	orders, err := h.uc.GetOrders(c.Request.Context(), userID)
+	responseStatus := http.StatusOK
+	if err != nil {
+		if errors.Is(err, usecase.ErrNoOrderFound) {
+			responseStatus = http.StatusNoContent
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
 	}
-	c.String(http.StatusOK, message)
+	c.JSON(responseStatus, orders)
 }
 
 func (h *gophermartHandlers) postOrders(c *gin.Context) {
@@ -42,7 +48,7 @@ func (h *gophermartHandlers) postOrders(c *gin.Context) {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": err.Error()})
 		return
 	}
-	order, err := h.uc.NewOrder(userID, strconv.Itoa(orderNumber))
+	order, err := h.uc.NewOrder(c.Request.Context(), userID, strconv.Itoa(orderNumber))
 	if errors.Is(err, usecase.ErrOrderAlreadyGot) {
 		c.JSON(http.StatusOK, order)
 		return

@@ -28,13 +28,13 @@ func (h *gophermartHandlers) userLogin(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "username or password is incorrect."})
 		return
 	}
-	token, err := h.setCookieToken(c, user.UserID)
+	_, err = h.setCookieToken(c, user.UserID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"token": token})
+	c.JSON(http.StatusOK, user)
 }
 
 func (h *gophermartHandlers) userRegister(c *gin.Context) {
@@ -58,7 +58,7 @@ func (h *gophermartHandlers) userRegister(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"message": "registration success!"})
+	c.JSON(http.StatusOK, user)
 
 }
 
