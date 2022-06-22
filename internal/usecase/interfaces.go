@@ -18,6 +18,7 @@ type IGopherMart interface {
 	GetUserToken(
 		userID string) (token string, err error)
 	ParseToken(tokenString string) (userID string, err error)
+	NewOrder(userID, orderNumber string) (order entity.Order, err error)
 }
 type IGopherMartRepo interface {
 	SaveUser(
@@ -43,4 +44,10 @@ type IGopherMartWebAPI interface {
 	GenerateToken(userID string) (token string, err error)
 	CheckToken(tokenString string) error
 	ParseToken(tokenString string) (userID string, err error)
+}
+
+type IWorkerPool interface {
+	Push(task func(ctx context.Context) error)
+	Run(ctx context.Context)
+	Close()
 }

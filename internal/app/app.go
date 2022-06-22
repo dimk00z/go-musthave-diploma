@@ -12,7 +12,7 @@ import (
 	"github.com/dimk00z/go-musthave-diploma/internal/usecase"
 	"github.com/dimk00z/go-musthave-diploma/internal/usecase/repo"
 	"github.com/dimk00z/go-musthave-diploma/internal/usecase/webapi"
-	"github.com/dimk00z/go-musthave-diploma/internal/worker"
+	"github.com/dimk00z/go-musthave-diploma/internal/usecase/worker"
 	"github.com/dimk00z/go-musthave-diploma/pkg/httpserver"
 	"github.com/dimk00z/go-musthave-diploma/pkg/logger"
 	"github.com/dimk00z/go-musthave-diploma/pkg/postgres"
@@ -44,6 +44,7 @@ func Run(cfg *config.Config, l *logger.Logger) {
 		repo.New(pg),
 		webapi.New(cfg),
 		l,
+		wp,
 	)
 
 	// HTTP Server

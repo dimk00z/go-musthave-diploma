@@ -1,9 +1,11 @@
 package api
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 
+	"github.com/dimk00z/go-musthave-diploma/internal/usecase"
 	"github.com/dimk00z/go-musthave-diploma/internal/utils"
 	"github.com/gin-gonic/gin"
 )
@@ -30,18 +32,31 @@ func (h *gophermartHandlers) postOrders(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	orderID, err := strconv.Atoi(string(body))
+	orderNumber, err := strconv.Atoi(string(body))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	err = utils.LuhnValid(orderID)
+	err = utils.LuhnValid(orderNumber)
 	if err != nil {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": err.Error()})
 		return
 	}
-	// TODO add saving
-	c.JSON(http.StatusOK, gin.H{"user": userID, "body": orderID})
+	order, err := h.uc.NewOrder(userID, strconv.Itoa(orderNumber))
+	if errors.Is(err, usecase.ErrOrderAlreadyGot) {
+		c.JSON(http.StatusOK, order)
+		return
+	}
+	if errors.Is(err, usecase.ErrOrderGotByDifferentUser) {
+		c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
+		return
+	}
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	h.l.Debug(order)
+	c.JSON(http.StatusAccepted, order)
 }
 
 type OrderURI struct {

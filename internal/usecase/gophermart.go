@@ -6,6 +6,7 @@ import (
 
 	"github.com/dimk00z/go-musthave-diploma/internal/entity"
 	"github.com/dimk00z/go-musthave-diploma/pkg/logger"
+
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -13,13 +14,15 @@ type GopherMartUseCase struct {
 	repo   IGopherMartRepo
 	webAPI IGopherMartWebAPI
 	l      logger.Interface
+	wp     IWorkerPool
 }
 
-func New(r IGopherMartRepo, w IGopherMartWebAPI, l logger.Interface) *GopherMartUseCase {
+func New(r IGopherMartRepo, w IGopherMartWebAPI, l logger.Interface, wp IWorkerPool) *GopherMartUseCase {
 	return &GopherMartUseCase{
 		repo:   r,
 		webAPI: w,
 		l:      l,
+		wp:     wp,
 	}
 }
 
@@ -68,4 +71,8 @@ func (uc *GopherMartUseCase) GetUserToken(
 func (uc *GopherMartUseCase) ParseToken(tokenString string) (userID string, err error) {
 
 	return uc.webAPI.ParseToken(tokenString)
+}
+
+func (uc *GopherMartUseCase) NewOrder(userID, orderNumber string) (order entity.Order, err error) {
+	return
 }

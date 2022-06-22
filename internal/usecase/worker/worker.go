@@ -5,15 +5,11 @@ import (
 	"sync"
 
 	"github.com/dimk00z/go-musthave-diploma/config"
+	"github.com/dimk00z/go-musthave-diploma/internal/usecase"
 	"github.com/dimk00z/go-musthave-diploma/pkg/logger"
 	"golang.org/x/sync/errgroup"
 )
 
-type IWorkerPool interface {
-	Push(task func(ctx context.Context) error)
-	Run(ctx context.Context)
-	Close()
-}
 type WorkersPool struct {
 	workersNumber int
 	inputCh       chan func(ctx context.Context) error
@@ -22,11 +18,11 @@ type WorkersPool struct {
 }
 
 var (
-	wp   IWorkerPool
+	wp   usecase.IWorkerPool
 	once sync.Once
 )
 
-func NewWorkersPool(workersNumber int, poolLength int, l *logger.Logger) *WorkersPool {
+func NewWorkersPool(workersNumber int, poolLength int, l *logger.Logger) usecase.IWorkerPool {
 	return &WorkersPool{
 		workersNumber: workersNumber,
 		inputCh:       make(chan func(ctx context.Context) error, poolLength),
@@ -81,7 +77,7 @@ func (wp *WorkersPool) Close() {
 	close(wp.done)
 }
 
-func GetWorkersPool(wpConfig config.Workers, l *logger.Logger) IWorkerPool {
+func GetWorkersPool(wpConfig config.Workers, l *logger.Logger) usecase.IWorkerPool {
 	once.Do(func() {
 		wp = NewWorkersPool(wpConfig.WorkersNumber, wpConfig.PoolLength, l)
 	})
