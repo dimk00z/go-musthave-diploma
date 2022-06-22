@@ -9,7 +9,7 @@ import (
 func main() {
 	// Configuration
 	cfg := config.NewConfig()
-	l := logger.New("DEBUG")
+	l := logger.New(cfg.Log.Level)
 	l.Debug(cfg)
 	// Run
 	app.Run(cfg, l)

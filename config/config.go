@@ -9,6 +9,13 @@ import (
 	tld "github.com/jpillora/go-tld"
 )
 
+const configPath string = "./config/config.yml"
+
+var (
+	cfg  *Config
+	once sync.Once
+)
+
 type (
 	// Config -.
 	Config struct {
@@ -71,19 +78,11 @@ func (c *Config) checkFlags() {
 	}
 }
 
-var (
-	cfg  *Config
-	once sync.Once
-)
-
 // NewConfig returns app config.
 func NewConfig() *Config {
 
 	once.Do(func() {
 		cfg = &Config{}
-
-		configPath := "./config/config.yml"
-
 		err := cleanenv.ReadConfig(configPath, cfg)
 		if err != nil {
 			log.Fatalf("config error: %v", err)
