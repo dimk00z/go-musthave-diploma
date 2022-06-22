@@ -10,4 +10,6 @@ var (
 	ErrOrderAlreadyGot         = errors.New("current order has been loaded by current user")
 	ErrNoOrderFound            = errors.New("no order for current user")
 	ErrWrongOrderOwner         = errors.New("order for another user")
+	ErrNotEnoughFunds          = errors.New("there are not enough funds on the account")
+	ErrWrongOrder              = errors.New("problem with an order")
 )

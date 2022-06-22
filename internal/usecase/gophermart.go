@@ -102,5 +102,9 @@ func (uc *GopherMartUseCase) GetOrder(ctx context.Context,
 }
 
 func (uc *GopherMartUseCase) GetBalance(ctx context.Context, userID string) (balance entity.Balance, err error) {
+	return uc.repo.GetBalance(ctx, userID)
+}
+
+func (uc *GopherMartUseCase) Withdraw(ctx context.Context, userID string, orderNumber int) (err error) {
 	return
 }

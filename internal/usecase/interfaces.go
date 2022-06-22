@@ -22,7 +22,9 @@ type IGopherMart interface {
 	GetOrders(ctx context.Context, userID string) (orders []entity.Order, err error)
 	GetOrder(ctx context.Context, orderNumber int, userID string) (order entity.Order, err error)
 	GetBalance(ctx context.Context, userID string) (balance entity.Balance, err error)
+	Withdraw(ctx context.Context, userID string, orderNumber int) (err error)
 }
+
 type IGopherMartRepo interface {
 	SaveUser(
 		ctx context.Context,
@@ -33,16 +35,10 @@ type IGopherMartRepo interface {
 	NewOrder(ctx context.Context, userID, orderID string, orderNumber int) (order entity.Order, err error)
 	GetOrders(ctx context.Context, userID string) (orders []entity.Order, err error)
 	GetOrder(ctx context.Context, orderNumber int) (order entity.Order, err error)
+	GetBalance(ctx context.Context, userID string) (balance entity.Balance, err error)
 }
 
 type IGopherMartWebAPI interface {
-	RegisterUser(
-		ctx context.Context,
-		userName string,
-		password string) (user entity.User, err error)
-	Login(ctx context.Context,
-		userName string,
-		password string) (user entity.User, err error)
 	GetPasswordHash(
 		password string) (passwordHash string, err error)
 	VerifyPassword(
