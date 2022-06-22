@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS public."user";
+DROP TABLE IF EXISTS "public"."order";
 
-DROP TABLE IF EXISTS order;
+DROP TABLE IF EXISTS "public"."withdrawal";
 
-DROP TABLE IF EXISTS balance;
+DROP TABLE IF EXISTS "public"."user";

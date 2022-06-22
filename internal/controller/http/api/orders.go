@@ -26,7 +26,7 @@ func (h gophermartHandlers) getOrders(c *gin.Context) {
 	c.JSON(responseStatus, orders)
 }
 
-func (h *gophermartHandlers) postOrders(c *gin.Context) {
+func (h *gophermartHandlers) postOrder(c *gin.Context) {
 	contentType := c.Request.Header.Get("Content-Type")
 	if contentType != "text/plain" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "wrong header"})
@@ -48,7 +48,7 @@ func (h *gophermartHandlers) postOrders(c *gin.Context) {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": err.Error()})
 		return
 	}
-	order, err := h.uc.NewOrder(c.Request.Context(), userID, strconv.Itoa(orderNumber))
+	order, err := h.uc.NewOrder(c.Request.Context(), userID, orderNumber)
 	if errors.Is(err, usecase.ErrOrderAlreadyGot) {
 		c.JSON(http.StatusOK, order)
 		return
@@ -66,18 +66,19 @@ func (h *gophermartHandlers) postOrders(c *gin.Context) {
 }
 
 type OrderURI struct {
-	OrderID int `json:"order" uri:"order"`
+	OrderNumber string `json:"order" uri:"order"`
 }
 
-func (h gophermartHandlers) getOrder(c *gin.Context) {
-	orderURI := OrderURI{}
-	if err := c.BindUri(&orderURI); err != nil {
-		c.AbortWithError(http.StatusBadRequest, err)
-		return
-	}
-	// ostrconv.Atoi(s)
-	userID := c.GetString("UserIDCtx")
+// func (h gophermartHandlers) getOrder(c *gin.Context) {
+// 	orderURI := OrderURI{}
+// 	if err := c.BindUri(&orderURI); err != nil {
+// 		c.AbortWithError(http.StatusBadRequest, err)
+// 		return
+// 	}
+// 	// ostrconv.Atoi(s)
+// 	userID := c.GetString("UserIDCtx")
+// 	order, err := h.uc.GetOrder(c.Request.Context(), orderURI.OrderNumber, userID)
+// 	if errors.Is(err, )
+// 	c.JSON(http.StatusOK, order)
 
-	c.JSON(http.StatusOK, gin.H{"user": userID, "body": orderURI.OrderID})
-
-}
+// }

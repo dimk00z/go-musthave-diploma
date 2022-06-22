@@ -35,10 +35,13 @@ func newGopherMartRoutes(api *gin.RouterGroup, uc usecase.IGopherMart, l logger.
 	ordersAPI.Use(handlers.JwtAuthMiddleware())
 	{
 		ordersAPI.GET("/", handlers.getOrders)
-		ordersAPI.POST("/", handlers.postOrders)
-		ordersAPI.GET("/:order", handlers.getOrder)
+		ordersAPI.POST("/", handlers.postOrder)
+		// лишний
+		// ordersAPI.GET("/:order", handlers.getOrder)
+
 	}
 	balanceAPI := userAPI.Group("/balance")
+	balanceAPI.Use(handlers.JwtAuthMiddleware())
 	{
 		balanceAPI.GET("/", handlers.getBalance)
 		balanceAPI.GET("/withdrawals", handlers.getWithdrawals)

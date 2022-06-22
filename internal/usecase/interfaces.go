@@ -18,8 +18,10 @@ type IGopherMart interface {
 	GetUserToken(
 		userID string) (token string, err error)
 	ParseToken(tokenString string) (userID string, err error)
-	NewOrder(ctx context.Context, userID, orderNumber string) (order entity.Order, err error)
+	NewOrder(ctx context.Context, userID string, orderNumber int) (order entity.Order, err error)
 	GetOrders(ctx context.Context, userID string) (orders []entity.Order, err error)
+	GetOrder(ctx context.Context, orderNumber int, userID string) (order entity.Order, err error)
+	GetBalance(ctx context.Context, userID string) (balance entity.Balance, err error)
 }
 type IGopherMartRepo interface {
 	SaveUser(
@@ -28,8 +30,9 @@ type IGopherMartRepo interface {
 	GetUser(
 		ctx context.Context,
 		userName string) (user entity.User, err error)
-	NewOrder(ctx context.Context, userID, orderID, orderNumber string) (order entity.Order, err error)
+	NewOrder(ctx context.Context, userID, orderID string, orderNumber int) (order entity.Order, err error)
 	GetOrders(ctx context.Context, userID string) (orders []entity.Order, err error)
+	GetOrder(ctx context.Context, orderNumber int) (order entity.Order, err error)
 }
 
 type IGopherMartWebAPI interface {

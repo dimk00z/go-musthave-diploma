@@ -73,7 +73,17 @@ func (uc *GopherMartUseCase) ParseToken(tokenString string) (userID string, err 
 	return uc.webAPI.ParseToken(tokenString)
 }
 
-func (uc *GopherMartUseCase) NewOrder(ctx context.Context, userID, orderNumber string) (order entity.Order, err error) {
+func (uc *GopherMartUseCase) NewOrder(ctx context.Context, userID string, orderNumber int) (order entity.Order, err error) {
+	checkedOrder, err := uc.repo.GetOrder(ctx, orderNumber)
+	log.Println(checkedOrder)
+	if checkedOrder.OrderNumber != 0 {
+		if checkedOrder.UserID != userID {
+			err = ErrOrderGotByDifferentUser
+		} else {
+			err = ErrOrderAlreadyGot
+		}
+		return checkedOrder, err
+	}
 	orderID := uuid.NewV4().String()
 	order, err = uc.repo.NewOrder(ctx, userID, orderID, orderNumber)
 	return
@@ -81,4 +91,16 @@ func (uc *GopherMartUseCase) NewOrder(ctx context.Context, userID, orderNumber s
 
 func (uc *GopherMartUseCase) GetOrders(ctx context.Context, userID string) (orders []entity.Order, err error) {
 	return uc.repo.GetOrders(ctx, userID)
+}
+func (uc *GopherMartUseCase) GetOrder(ctx context.Context,
+	orderNumber int, userID string) (order entity.Order, err error) {
+	order, err = uc.repo.GetOrder(ctx, orderNumber)
+	if err != nil {
+		return
+	}
+	return
+}
+
+func (uc *GopherMartUseCase) GetBalance(ctx context.Context, userID string) (balance entity.Balance, err error) {
+	return
 }

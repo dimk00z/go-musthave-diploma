@@ -3,6 +3,7 @@ package repo
 import (
 	"context"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/Masterminds/squirrel"
@@ -12,14 +13,39 @@ import (
 	"github.com/jackc/pgerrcode"
 )
 
-func (r *GopherMartRepo) GetOrder(orderNumber string) (order entity.Order, err error) {
+func (r *GopherMartRepo) GetOrder(ctx context.Context, orderNumber int) (order entity.Order, err error) {
+	sql, args, err := r.Builder.
+		Select("user_id, order_id, status, uploaded_at, accrual").
+		From("public.order").
+		Where(squirrel.Eq{"order_number": orderNumber}).
+		Limit(1).
+		ToSql()
 
+	log.Println(sql, args)
+
+	rows, err := r.Pool.Query(ctx, sql, args...)
+	if err != nil {
+		err = fmt.Errorf("GopherMartRepo - GetOrder - r.Pool.Query: %w", err)
+		return
+	}
+	defer rows.Close()
+	for rows.Next() {
+		e := entity.Order{}
+
+		err = rows.Scan(&e.UserID, &e.OrderID, &e.Status, &e.ProcessedAt, &e.Accrual)
+		if err != nil {
+			return order, fmt.Errorf("GopherMartRepo - GetOrder - rows.Scan: %w", err)
+		}
+		e.OrderNumber = orderNumber
+		order = e
+	}
 	return
 }
 
 func (r *GopherMartRepo) NewOrder(
 	ctx context.Context,
-	userID, orderID, orderNumber string) (order entity.Order, err error) {
+	userID, orderID string, orderNumber int) (order entity.Order, err error) {
+
 	uploaded_at := time.Now()
 	status := "NEW"
 	sql, args, err := r.Builder.
@@ -38,8 +64,13 @@ func (r *GopherMartRepo) NewOrder(
 		err = fmt.Errorf("GopherMartRepo - SaveUser - r.Builder: %w", err)
 		return
 	}
-	return entity.Order{OrderID: orderID, Status: status, OrderNumber: orderNumber, ProcessedAt: uploaded_at.Unix()}, err
+	return entity.Order{
+		OrderID:     orderID,
+		Status:      status,
+		OrderNumber: orderNumber,
+		ProcessedAt: uploaded_at}, err
 }
+
 func (r *GopherMartRepo) GetOrders(ctx context.Context, userID string) (orders []entity.Order, err error) {
 	sql, args, err := r.Builder.
 		Select("order_id, order_number, status, uploaded_at, accrual").
@@ -47,23 +78,23 @@ func (r *GopherMartRepo) GetOrders(ctx context.Context, userID string) (orders [
 		Where(squirrel.Eq{"user_id": userID}).
 		OrderBy("uploaded_at").ToSql()
 	if err != nil {
-		err = fmt.Errorf("GopherMartRepo - GetUser - r.Builder: %w", err)
+		err = fmt.Errorf("GopherMartRepo - GetOrders - r.Builder: %w", err)
 		return
 	}
 	rows, err := r.Pool.Query(ctx, sql, args...)
 	if err != nil {
-		err = fmt.Errorf("GopherMartRepo - GetUser - r.Pool.Query: %w", err)
+		err = fmt.Errorf("GopherMartRepo - GetOrders - r.Pool.Query: %w", err)
 		return
 	}
 	defer rows.Close()
 	for rows.Next() {
 		e := entity.Order{}
 
-		err = rows.Scan(&e.OrderID, &e.OrderNumber, &e.ProcessedAt, &e.Accrual)
+		err = rows.Scan(&e.OrderID, &e.OrderNumber, &e.Status, &e.ProcessedAt, &e.Accrual)
 		if err != nil {
-			return nil, fmt.Errorf("TranslationRepo - GetHistory - rows.Scan: %w", err)
+			return nil, fmt.Errorf("GopherMartRepo - GetOrders - rows.Scan: %w", err)
 		}
-
+		e.UserID = userID
 		orders = append(orders, e)
 	}
 	if len(orders) == 0 {
