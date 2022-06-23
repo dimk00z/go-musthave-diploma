@@ -21,6 +21,7 @@ require (
 
 require (
 	github.com/BurntSushi/toml v1.1.0 // indirect
+	github.com/ShiraazMoollatjie/goluhn v0.0.0-20211017190329-0d86158c056a // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect

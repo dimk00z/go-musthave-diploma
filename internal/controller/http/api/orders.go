@@ -3,10 +3,9 @@ package api
 import (
 	"errors"
 	"net/http"
-	"strconv"
 
+	"github.com/ShiraazMoollatjie/goluhn"
 	"github.com/dimk00z/go-musthave-diploma/internal/usecase"
-	"github.com/dimk00z/go-musthave-diploma/internal/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -38,12 +37,13 @@ func (h *gophermartHandlers) postOrder(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	orderNumber, err := strconv.Atoi(string(body))
+	orderNumber := string(body)
+	err = goluhn.Validate(orderNumber)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	err = utils.LuhnValid(orderNumber)
+	err = goluhn.Validate(orderNumber)
 	if err != nil {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": err.Error()})
 		return

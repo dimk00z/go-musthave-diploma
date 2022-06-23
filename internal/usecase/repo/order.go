@@ -13,7 +13,7 @@ import (
 	"github.com/jackc/pgerrcode"
 )
 
-func (r *GopherMartRepo) GetOrder(ctx context.Context, orderNumber int) (order entity.Order, err error) {
+func (r *GopherMartRepo) GetOrder(ctx context.Context, orderNumber string) (order entity.Order, err error) {
 	sql, args, err := r.Builder.
 		Select("user_id, order_id, status, uploaded_at, accrual").
 		From("public.order").
@@ -44,7 +44,7 @@ func (r *GopherMartRepo) GetOrder(ctx context.Context, orderNumber int) (order e
 
 func (r *GopherMartRepo) NewOrder(
 	ctx context.Context,
-	userID, orderID string, orderNumber int) (order entity.Order, err error) {
+	userID, orderID, orderNumber string) (order entity.Order, err error) {
 
 	uploadedAt := time.Now()
 	status := "NEW"
@@ -57,7 +57,7 @@ func (r *GopherMartRepo) NewOrder(
 	if err != nil {
 		if pqerr, ok := err.(*pgconn.PgError); ok {
 			if pgerrcode.IsIntegrityConstraintViolation(pqerr.Code) {
-				err = usecase.ErrUserAlreadyExists
+				err = usecase.ErrOrderAlreadyGot
 				return
 			}
 		}

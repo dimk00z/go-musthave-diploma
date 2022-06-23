@@ -3,7 +3,6 @@ package api
 import (
 	"errors"
 	"net/http"
-	"strconv"
 
 	"github.com/dimk00z/go-musthave-diploma/internal/usecase"
 	"github.com/gin-gonic/gin"
@@ -45,12 +44,8 @@ func (h *gophermartHandlers) postWithdraw(c *gin.Context) {
 		return
 	}
 	userID := c.GetString("UserIDCtx")
-	orderNumber, err := strconv.Atoi(input.OrderNumber)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	err = h.uc.Withdraw(c.Request.Context(), userID, orderNumber, input.Sum)
+
+	err := h.uc.Withdraw(c.Request.Context(), userID, input.OrderNumber, input.Sum)
 	if errors.Is(err, usecase.ErrNotEnoughFunds) {
 		c.JSON(http.StatusPaymentRequired, gin.H{"error": err.Error()})
 		return

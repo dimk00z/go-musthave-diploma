@@ -73,10 +73,10 @@ func (uc *GopherMartUseCase) ParseToken(tokenString string) (userID string, err 
 	return uc.webAPI.ParseToken(tokenString)
 }
 
-func (uc *GopherMartUseCase) NewOrder(ctx context.Context, userID string, orderNumber int) (order entity.Order, err error) {
+func (uc *GopherMartUseCase) NewOrder(ctx context.Context, userID string, orderNumber string) (order entity.Order, err error) {
 	checkedOrder, err := uc.repo.GetOrder(ctx, orderNumber)
-	log.Println(checkedOrder)
-	if checkedOrder.OrderNumber != 0 {
+	uc.l.Debug(checkedOrder)
+	if checkedOrder != (entity.Order{}) {
 		if checkedOrder.UserID != userID {
 			err = ErrOrderGotByDifferentUser
 		} else {
@@ -85,6 +85,7 @@ func (uc *GopherMartUseCase) NewOrder(ctx context.Context, userID string, orderN
 		return checkedOrder, err
 	}
 	if err != nil {
+		uc.l.Error(err)
 		return
 	}
 	orderID := uuid.NewV4().String()
@@ -93,10 +94,14 @@ func (uc *GopherMartUseCase) NewOrder(ctx context.Context, userID string, orderN
 }
 
 func (uc *GopherMartUseCase) GetOrders(ctx context.Context, userID string) (orders []entity.Order, err error) {
+	orders, err = uc.repo.GetOrders(ctx, userID)
+	if err != nil {
+		return
+	}
 	return uc.repo.GetOrders(ctx, userID)
 }
 func (uc *GopherMartUseCase) GetOrder(ctx context.Context,
-	orderNumber int, userID string) (order entity.Order, err error) {
+	orderNumber string, userID string) (order entity.Order, err error) {
 	order, err = uc.repo.GetOrder(ctx, orderNumber)
 	if err != nil {
 		return
@@ -108,7 +113,7 @@ func (uc *GopherMartUseCase) GetBalance(ctx context.Context, userID string) (bal
 	return uc.repo.GetBalance(ctx, userID)
 }
 
-func (uc *GopherMartUseCase) Withdraw(ctx context.Context, userID string, orderNumber int, sum float32) (err error) {
+func (uc *GopherMartUseCase) Withdraw(ctx context.Context, userID string, orderNumber string, sum float32) (err error) {
 	balance, err := uc.repo.GetBalance(ctx, userID)
 	if balance.Current < float32(sum) {
 		err = ErrNotEnoughFunds
@@ -122,8 +127,9 @@ func (uc *GopherMartUseCase) Withdraw(ctx context.Context, userID string, orderN
 	balance.Current = balance.Current - sum
 	balance.Spend += sum
 	err = uc.repo.UpdateBalance(ctx, userID, balance)
+	// TODO add saving Withdraw
 	// err=uc.repo.SaveWithdraw()
-	// err = uc.repo.Withdraw(ctx, userID, sum)
+
 	return
 }
 
