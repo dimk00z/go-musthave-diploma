@@ -35,8 +35,20 @@ func (r *GopherMartRepo) GetBalance(ctx context.Context, userID string) (balance
 	return
 }
 
-func (r *GopherMartRepo) UpdateBalance(ctx context.Context, balance entity.Balance) (err error) {
+func (r *GopherMartRepo) UpdateBalance(ctx context.Context, userID string, balance entity.Balance) (err error) {
+	sql, args, err := r.Builder.
+		Update("public.user").
+		Set("balance", balance.Current).
+		Set("spend", balance.Spend).
+		Where(squirrel.Eq{"user_id": userID}).
+		ToSql()
+
+	if err != nil {
+		return fmt.Errorf("GopherMartRepo - UpdateBalance - r.Builder: %w", err)
+	}
+	_, err = r.Pool.Query(context.Background(), sql, args...)
 	return
+
 }
 
 func (r *GopherMartRepo) SaveWithdraw(ctx context.Context, userID string, sum int) (err error) {
@@ -44,7 +56,7 @@ func (r *GopherMartRepo) SaveWithdraw(ctx context.Context, userID string, sum in
 
 	return
 }
-func (r *GopherMartRepo) GetWithdrawals(ctx context.Context, userID string, sum int) (err error) {
+func (r *GopherMartRepo) GetWithdrawals(ctx context.Context, userID string) (withdrawals []entity.Withdrawal, err error) {
 	//TODO add Withdraw logic
 
 	return

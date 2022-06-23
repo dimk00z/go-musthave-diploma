@@ -44,7 +44,7 @@ func (r *GopherMartRepo) GetUser(
 	ctx context.Context,
 	userName string) (user entity.User, err error) {
 	sql, args, err := r.Builder.
-		Select("user_id, password").
+		Select("user_id, password, balance, spend").
 		From("public.user").
 		Where(squirrel.Eq{"login": userName}).
 		Limit(1).
@@ -60,7 +60,7 @@ func (r *GopherMartRepo) GetUser(
 	}
 	defer rows.Close()
 	for rows.Next() {
-		err = rows.Scan(&user.UserID, &user.Password)
+		err = rows.Scan(&user.UserID, &user.Password, &user.Balance.Current, &user.Balance.Spend)
 		if err != nil {
 			err = fmt.Errorf("GopherMartRepo - GetUser - rows.Scan: %w", err)
 			return

@@ -7,45 +7,39 @@ import (
 )
 
 type IGopherMart interface {
-	RegisterUser(
-		ctx context.Context,
-		userName string,
-		password string) (user entity.User, err error)
-	Login(
-		ctx context.Context,
-		userName string,
-		password string) (user entity.User, err error)
-	GetUserToken(
-		userID string) (token string, err error)
+	RegisterUser(ctx context.Context, userName string, password string) (user entity.User, err error)
+	Login(ctx context.Context, userName string, password string) (user entity.User, err error)
+
+	GetUserToken(userID string) (token string, err error)
 	ParseToken(tokenString string) (userID string, err error)
+
 	NewOrder(ctx context.Context, userID string, orderNumber int) (order entity.Order, err error)
 	GetOrders(ctx context.Context, userID string) (orders []entity.Order, err error)
 	GetOrder(ctx context.Context, orderNumber int, userID string) (order entity.Order, err error)
 	GetBalance(ctx context.Context, userID string) (balance entity.Balance, err error)
-	Withdraw(ctx context.Context, userID string, orderNumber, sum int) (err error)
+
+	Withdraw(ctx context.Context, userID string, orderNumber int, sum float32) (err error)
 	GetWithdrawals(ctx context.Context, userID string) (withdrawals []entity.Withdrawal, err error)
 }
 
 type IGopherMartRepo interface {
-	SaveUser(
-		ctx context.Context,
-		userID, userName, password string) (user entity.User, err error)
-	GetUser(
-		ctx context.Context,
-		userName string) (user entity.User, err error)
+	SaveUser(ctx context.Context, userID, userName, password string) (user entity.User, err error)
+	GetUser(ctx context.Context, userName string) (user entity.User, err error)
+
 	NewOrder(ctx context.Context, userID, orderID string, orderNumber int) (order entity.Order, err error)
 	GetOrders(ctx context.Context, userID string) (orders []entity.Order, err error)
 	GetOrder(ctx context.Context, orderNumber int) (order entity.Order, err error)
+
 	GetBalance(ctx context.Context, userID string) (balance entity.Balance, err error)
+	UpdateBalance(ctx context.Context, userID string, balance entity.Balance) (err error)
+
 	SaveWithdraw(ctx context.Context, userID string, sum int) (err error)
-	GetWithdrawals(ctx context.Context, userID string, sum int) (err error)
+	GetWithdrawals(ctx context.Context, userID string) (withdrawals []entity.Withdrawal, err error)
 }
 
 type IGopherMartWebAPI interface {
-	GetPasswordHash(
-		password string) (passwordHash string, err error)
-	VerifyPassword(
-		password, hashedPassword string) (err error)
+	GetPasswordHash(password string) (passwordHash string, err error)
+	VerifyPassword(password, hashedPassword string) (err error)
 	GenerateToken(userID string) (token string, err error)
 	CheckToken(tokenString string) error
 	ParseToken(tokenString string) (userID string, err error)

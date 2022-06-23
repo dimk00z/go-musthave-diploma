@@ -34,8 +34,8 @@ func (h gophermartHandlers) getWithdrawals(c *gin.Context) {
 }
 
 type WithdrawInput struct {
-	OrderNumber string `json:"order" binding:"required"`
-	Sum         int    `json:"sum" binding:"required"`
+	OrderNumber string  `json:"order" binding:"required"`
+	Sum         float32 `json:"sum" binding:"required"`
 }
 
 func (h *gophermartHandlers) postWithdraw(c *gin.Context) {

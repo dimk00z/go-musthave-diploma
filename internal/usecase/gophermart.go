@@ -84,6 +84,9 @@ func (uc *GopherMartUseCase) NewOrder(ctx context.Context, userID string, orderN
 		}
 		return checkedOrder, err
 	}
+	if err != nil {
+		return
+	}
 	orderID := uuid.NewV4().String()
 	order, err = uc.repo.NewOrder(ctx, userID, orderID, orderNumber)
 	return
@@ -105,7 +108,7 @@ func (uc *GopherMartUseCase) GetBalance(ctx context.Context, userID string) (bal
 	return uc.repo.GetBalance(ctx, userID)
 }
 
-func (uc *GopherMartUseCase) Withdraw(ctx context.Context, userID string, orderNumber, sum int) (err error) {
+func (uc *GopherMartUseCase) Withdraw(ctx context.Context, userID string, orderNumber int, sum float32) (err error) {
 	balance, err := uc.repo.GetBalance(ctx, userID)
 	if balance.Current < float32(sum) {
 		err = ErrNotEnoughFunds
@@ -116,6 +119,9 @@ func (uc *GopherMartUseCase) Withdraw(ctx context.Context, userID string, orderN
 		err = ErrWrongOrder
 		return
 	}
+	balance.Current = balance.Current - sum
+	balance.Spend += sum
+	err = uc.repo.UpdateBalance(ctx, userID, balance)
 	// err=uc.repo.SaveWithdraw()
 	// err = uc.repo.Withdraw(ctx, userID, sum)
 	return
@@ -124,5 +130,6 @@ func (uc *GopherMartUseCase) Withdraw(ctx context.Context, userID string, orderN
 func (uc *GopherMartUseCase) GetWithdrawals(
 	ctx context.Context,
 	userID string) (withdrawals []entity.Withdrawal, err error) {
-	return
+
+	return uc.repo.GetWithdrawals(ctx, userID)
 }

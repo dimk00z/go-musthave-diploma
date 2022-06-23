@@ -46,12 +46,12 @@ func (r *GopherMartRepo) NewOrder(
 	ctx context.Context,
 	userID, orderID string, orderNumber int) (order entity.Order, err error) {
 
-	uploaded_at := time.Now()
+	uploadedAt := time.Now()
 	status := "NEW"
 	sql, args, err := r.Builder.
 		Insert("public.order").
 		Columns("user_id, order_number, uploaded_at, order_id, status").
-		Values(userID, orderNumber, uploaded_at, orderID, status).
+		Values(userID, orderNumber, uploadedAt, orderID, status).
 		ToSql()
 	_, err = r.Pool.Exec(ctx, sql, args...)
 	if err != nil {
@@ -68,7 +68,7 @@ func (r *GopherMartRepo) NewOrder(
 		OrderID:     orderID,
 		Status:      status,
 		OrderNumber: orderNumber,
-		ProcessedAt: uploaded_at}, err
+		ProcessedAt: uploadedAt}, err
 }
 
 func (r *GopherMartRepo) GetOrders(ctx context.Context, userID string) (orders []entity.Order, err error) {
