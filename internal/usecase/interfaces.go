@@ -22,7 +22,8 @@ type IGopherMart interface {
 	GetOrders(ctx context.Context, userID string) (orders []entity.Order, err error)
 	GetOrder(ctx context.Context, orderNumber int, userID string) (order entity.Order, err error)
 	GetBalance(ctx context.Context, userID string) (balance entity.Balance, err error)
-	Withdraw(ctx context.Context, userID string, orderNumber int) (err error)
+	Withdraw(ctx context.Context, userID string, orderNumber, sum int) (err error)
+	GetWithdrawals(ctx context.Context, userID string) (withdrawals []entity.Withdrawal, err error)
 }
 
 type IGopherMartRepo interface {
@@ -36,6 +37,8 @@ type IGopherMartRepo interface {
 	GetOrders(ctx context.Context, userID string) (orders []entity.Order, err error)
 	GetOrder(ctx context.Context, orderNumber int) (order entity.Order, err error)
 	GetBalance(ctx context.Context, userID string) (balance entity.Balance, err error)
+	SaveWithdraw(ctx context.Context, userID string, sum int) (err error)
+	GetWithdrawals(ctx context.Context, userID string, sum int) (err error)
 }
 
 type IGopherMartWebAPI interface {

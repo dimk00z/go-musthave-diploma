@@ -20,8 +20,17 @@ func (h gophermartHandlers) getBalance(c *gin.Context) {
 }
 
 func (h gophermartHandlers) getWithdrawals(c *gin.Context) {
-	message := "I'm getWithdrawals"
-	c.String(http.StatusOK, message)
+	userID := c.GetString("UserIDCtx")
+	responseStatus := http.StatusOK
+	withdrawals, err := h.uc.GetWithdrawals(c.Request.Context(), userID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	if len(withdrawals) == 0 {
+		responseStatus = http.StatusNoContent
+	}
+	c.JSON(responseStatus, withdrawals)
 }
 
 type WithdrawInput struct {
@@ -41,7 +50,7 @@ func (h *gophermartHandlers) postWithdraw(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	err = h.uc.Withdraw(c.Request.Context(), userID, orderNumber)
+	err = h.uc.Withdraw(c.Request.Context(), userID, orderNumber, input.Sum)
 	if errors.Is(err, usecase.ErrNotEnoughFunds) {
 		c.JSON(http.StatusPaymentRequired, gin.H{"error": err.Error()})
 		return
@@ -54,5 +63,6 @@ func (h *gophermartHandlers) postWithdraw(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+	//update logic
 	c.JSON(http.StatusOK, input)
 }
