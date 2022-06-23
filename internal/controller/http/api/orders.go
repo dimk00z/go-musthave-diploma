@@ -40,11 +40,6 @@ func (h *gophermartHandlers) postOrder(c *gin.Context) {
 	orderNumber := string(body)
 	err = goluhn.Validate(orderNumber)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	err = goluhn.Validate(orderNumber)
-	if err != nil {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": err.Error()})
 		return
 	}

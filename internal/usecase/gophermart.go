@@ -115,6 +115,9 @@ func (uc *GopherMartUseCase) GetBalance(ctx context.Context, userID string) (bal
 
 func (uc *GopherMartUseCase) Withdraw(ctx context.Context, userID string, orderNumber string, sum float32) (err error) {
 	balance, err := uc.repo.GetBalance(ctx, userID)
+	if err != nil {
+		uc.l.Error(err)
+	}
 	if balance.Current < float32(sum) {
 		err = ErrNotEnoughFunds
 		return

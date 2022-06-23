@@ -20,6 +20,10 @@ func (r *GopherMartRepo) GetOrder(ctx context.Context, orderNumber string) (orde
 		Where(squirrel.Eq{"order_number": orderNumber}).
 		Limit(1).
 		ToSql()
+	if err != nil {
+		err = fmt.Errorf("GopherMartRepo - GetOrder - r.Builder: %w", err)
+		return
+	}
 
 	log.Println(sql, args)
 
@@ -53,6 +57,10 @@ func (r *GopherMartRepo) NewOrder(
 		Columns("user_id, order_number, uploaded_at, order_id, status").
 		Values(userID, orderNumber, uploadedAt, orderID, status).
 		ToSql()
+	if err != nil {
+		err = fmt.Errorf("GopherMartRepo - NewOrder - r.Builder: %w", err)
+		return
+	}
 	_, err = r.Pool.Exec(ctx, sql, args...)
 	if err != nil {
 		if pqerr, ok := err.(*pgconn.PgError); ok {
