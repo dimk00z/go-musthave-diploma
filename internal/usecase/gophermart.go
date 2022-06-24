@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"log"
+	"time"
 
 	"github.com/dimk00z/go-musthave-diploma/internal/entity"
 	"github.com/dimk00z/go-musthave-diploma/pkg/logger"
@@ -74,6 +75,7 @@ func (uc *GopherMartUseCase) ParseToken(tokenString string) (userID string, err 
 }
 
 func (uc *GopherMartUseCase) NewOrder(ctx context.Context, userID string, orderNumber string) (order entity.Order, err error) {
+
 	checkedOrder, err := uc.repo.GetOrder(ctx, orderNumber)
 	uc.l.Debug(checkedOrder)
 	if checkedOrder != (entity.Order{}) {
@@ -90,15 +92,25 @@ func (uc *GopherMartUseCase) NewOrder(ctx context.Context, userID string, orderN
 	}
 	orderID := uuid.NewV4().String()
 	order, err = uc.repo.NewOrder(ctx, userID, orderID, orderNumber)
+
+	postOrderInAccuralServiceTask := func(ctx context.Context) error {
+		taskErr := uc.webAPI.PostOrderInAccuralService(ctx, orderNumber)
+		if err != nil {
+			uc.l.Error(taskErr)
+		}
+		return nil
+	}
+	uc.wp.Push(postOrderInAccuralServiceTask)
+
 	return
 }
 
-func (uc *GopherMartUseCase) GetOrders(ctx context.Context, userID string) (orders []entity.Order, err error) {
-	orders, err = uc.repo.GetOrders(ctx, userID)
+func (uc *GopherMartUseCase) GetOrdersForUser(ctx context.Context, userID string) (orders []entity.Order, err error) {
+	orders, err = uc.repo.GetOrdersForUser(ctx, userID)
 	if err != nil {
 		return
 	}
-	return uc.repo.GetOrders(ctx, userID)
+	return orders, err
 }
 func (uc *GopherMartUseCase) GetOrder(ctx context.Context,
 	orderNumber string, userID string) (order entity.Order, err error) {
@@ -141,4 +153,40 @@ func (uc *GopherMartUseCase) GetWithdrawals(
 	userID string) (withdrawals []entity.Withdrawal, err error) {
 
 	return uc.repo.GetWithdrawals(ctx, userID)
+}
+
+func (uc *GopherMartUseCase) StartBackgroundService(ctx context.Context, urlAPI string, BackgroundServiceTimeout int) {
+	uc.l.Debug("Background service started")
+	ticker := time.Tick(time.Duration(BackgroundServiceTimeout) * time.Second)
+backgroundLoop:
+	for {
+		select {
+		case <-ctx.Done():
+			uc.l.Debug("Background service finished")
+			break backgroundLoop
+		case <-ticker:
+			ordersForProccess, err := uc.repo.GetForProccessOrders(ctx)
+			if err != nil {
+				uc.l.Error(err)
+				continue
+			}
+			for _, order := range ordersForProccess {
+				// uc.l.Debug("Background do the job")
+				updateOrderTask := func(ctx context.Context) error {
+					apiResponse, err := uc.webAPI.CheckOrder(ctx, order.OrderNumber)
+					if err != nil {
+						uc.l.Error(err)
+						return err
+					}
+					err = uc.repo.UpdateOrder(ctx, apiResponse, order)
+					if err != nil {
+						uc.l.Error(err)
+						return err
+					}
+					return nil
+				}
+				uc.wp.Push(updateOrderTask)
+			}
+		}
+	}
 }

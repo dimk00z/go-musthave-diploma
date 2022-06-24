@@ -12,7 +12,7 @@ import (
 func (h gophermartHandlers) getOrders(c *gin.Context) {
 
 	userID := c.GetString("UserIDCtx")
-	orders, err := h.uc.GetOrders(c.Request.Context(), userID)
+	orders, err := h.uc.GetOrdersForUser(c.Request.Context(), userID)
 	responseStatus := http.StatusOK
 	if err != nil {
 		if errors.Is(err, usecase.ErrNoOrderFound) {
@@ -59,21 +59,3 @@ func (h *gophermartHandlers) postOrder(c *gin.Context) {
 	h.l.Debug(order)
 	c.JSON(http.StatusAccepted, order)
 }
-
-type OrderURI struct {
-	OrderNumber string `json:"order" uri:"order"`
-}
-
-// func (h gophermartHandlers) getOrder(c *gin.Context) {
-// 	orderURI := OrderURI{}
-// 	if err := c.BindUri(&orderURI); err != nil {
-// 		c.AbortWithError(http.StatusBadRequest, err)
-// 		return
-// 	}
-// 	// ostrconv.Atoi(s)
-// 	userID := c.GetString("UserIDCtx")
-// 	order, err := h.uc.GetOrder(c.Request.Context(), orderURI.OrderNumber, userID)
-// 	if errors.Is(err, )
-// 	c.JSON(http.StatusOK, order)
-
-// }

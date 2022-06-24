@@ -79,7 +79,7 @@ func (r *GopherMartRepo) NewOrder(
 		ProcessedAt: uploadedAt}, err
 }
 
-func (r *GopherMartRepo) GetOrders(ctx context.Context, userID string) (orders []entity.Order, err error) {
+func (r *GopherMartRepo) GetOrdersForUser(ctx context.Context, userID string) (orders []entity.Order, err error) {
 	sql, args, err := r.Builder.
 		Select("order_id, order_number, status, uploaded_at, accrual").
 		From("public.order").
@@ -108,5 +108,38 @@ func (r *GopherMartRepo) GetOrders(ctx context.Context, userID string) (orders [
 	if len(orders) == 0 {
 		err = usecase.ErrNoOrderFound
 	}
+	return
+}
+
+func (r *GopherMartRepo) GetForProccessOrders(ctx context.Context) (orders []entity.Order, err error) {
+	statusesForCheck := []string{"NEW", "PROCESSING"}
+	sql, args, err := r.Builder.
+		Select("order_id, user_id, order_number, status, uploaded_at, accrual").
+		From("public.order").
+		Where(squirrel.Eq{"status": statusesForCheck}).
+		OrderBy("uploaded_at").ToSql()
+
+	if err != nil {
+		err = fmt.Errorf("GopherMartRepo - GetForProccessOrders - r.Builder: %w", err)
+		return
+	}
+	rows, err := r.Pool.Query(ctx, sql, args...)
+	if err != nil {
+		err = fmt.Errorf("GopherMartRepo - GetOrders - r.Pool.Query: %w", err)
+		return
+	}
+	defer rows.Close()
+	for rows.Next() {
+		e := entity.Order{}
+		err = rows.Scan(&e.OrderID, &e.UserID, &e.OrderNumber, &e.Status, &e.ProcessedAt, &e.Accrual)
+		if err != nil {
+			return nil, fmt.Errorf("GopherMartRepo - GetOrders - rows.Scan: %w", err)
+		}
+		orders = append(orders, e)
+	}
+	return
+}
+
+func (r *GopherMartRepo) UpdateOrder(ctx context.Context, apiResponse entity.AccrualSystemResponse, order entity.Order) (err error) {
 	return
 }

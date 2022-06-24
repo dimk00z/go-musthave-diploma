@@ -47,12 +47,12 @@ workerLoop:
 			l.Debug("worker_%v got context.Done", workerIndex)
 			break workerLoop
 		case workerTask := <-taskCh:
-			l.Debug("worker_%v is busy", workerIndex)
+			// l.Debug("worker_%v is busy", workerIndex)
 			if err := workerTask(ctx); err != nil {
 				l.Error("worker_%v got error:%s", workerIndex, err.Error())
 				return err
 			} else {
-				l.Debug("worker %v finished task correctly", workerIndex)
+				// l.Debug("worker %v finished task correctly", workerIndex)
 			}
 		}
 	}

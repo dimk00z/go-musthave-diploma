@@ -23,6 +23,7 @@ security:
 workers:
   workers_number: 5
   pool_length: 10
+  background_service_timeout: 1
 
 api:
-  accrual_system_address: 'pass'
+  accrual_system_address: 'localhost:9000'

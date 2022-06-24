@@ -47,6 +47,8 @@ func Run(cfg *config.Config, l *logger.Logger) {
 		wp,
 	)
 
+	go gophermartUseCase.StartBackgroundService(ctx, cfg.API.AccrualSystemAddress, cfg.Workers.BackgroundServiceTimeout)
+
 	// HTTP Server
 	mainRouter := gin.Default()
 	api.NewRouter(mainRouter, l, gophermartUseCase, cfg)

@@ -54,8 +54,9 @@ type (
 	}
 
 	Workers struct {
-		WorkersNumber int `env-required:"true" yaml:"workers_number" env:"WORKERS_NUMBER"`
-		PoolLength    int `env-required:"true" yaml:"pool_length" env:"POOL_LENGTH"`
+		WorkersNumber            int `env-required:"true" yaml:"workers_number" env:"WORKERS_NUMBER"`
+		PoolLength               int `env-required:"true" yaml:"pool_length" env:"POOL_LENGTH"`
+		BackgroundServiceTimeout int `env-required:"true" yaml:"background_service_timeout" env:"BACKGROUND_SERVICE_TIMEOUT"`
 	}
 	API struct {
 		AccrualSystemAddress string `env-required:"true" yaml:"accrual_system_address" env:"ACCRUAL_SYSTEM_ADDRESS"`
