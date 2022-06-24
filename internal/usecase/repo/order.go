@@ -141,26 +141,26 @@ func (r *GopherMartRepo) GetForProccessOrders(ctx context.Context) (orders []ent
 }
 
 func (r *GopherMartRepo) UpdateOrder(ctx context.Context, apiResponse entity.AccrualSystemResponse, order entity.Order) (err error) {
-	// sql, args, err := r.Builder.
-	// 	Update("public.order").
-	// 	Set("accrual", apiResponse.Accrual).
-	// 	Set("status", apiResponse.OrderStatus).
-	// 	Where(squirrel.Eq{"order_number": order.OrderNumber}).
-	// 	ToSql()
-	// if err != nil {
-	// 	return fmt.Errorf("GopherMartRepo - UpdateOrder - r.Builder: %w", err)
-	// }
-	// _, err = r.Pool.Query(ctx, sql, args...)
-	// if err != nil {
-	// 	return fmt.Errorf("GopherMartRepo - UpdateOrder - r.Pool: %w", err)
-	// }
+	sql, args, err := r.Builder.
+		Update("public.order").
+		Set("accrual", apiResponse.Accrual).
+		Set("status", apiResponse.OrderStatus).
+		Where(squirrel.Eq{"order_number": order.OrderNumber}).
+		ToSql()
+	if err != nil {
+		return fmt.Errorf("GopherMartRepo - UpdateOrder - r.Builder: %w", err)
+	}
+	_, err = r.Pool.Exec(ctx, sql, args...)
+	if err != nil {
+		return fmt.Errorf("GopherMartRepo - UpdateOrder - r.Pool: %w", err)
+	}
 
 	balance, err := r.GetBalance(ctx, order.UserID)
 	if err != nil {
 		return fmt.Errorf("GopherMartRepo - UpdateOrder - GetBalance: %w", err)
 	}
-	balance.Current += apiResponse.Accrual + 1
-	log.Println("!!!!!!!!!!!!!!!!!!balance", balance)
+	balance.Current += apiResponse.Accrual
+	log.Println(balance)
 	err = r.UpdateBalance(ctx, order.OrderID, balance)
 	if err != nil {
 		return fmt.Errorf("GopherMartRepo - UpdateOrder - UpdateBalance: %w", err)

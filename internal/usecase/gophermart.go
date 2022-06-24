@@ -169,11 +169,16 @@ backgroundLoop:
 				uc.l.Error(err)
 				continue
 			}
-			if len(ordersForProccess) > 0 {
-				log.Println(len(ordersForProccess))
-				log.Println(ordersForProccess)
+			if len(ordersForProccess) == 0 {
+				continue
 			}
+			log.Println(len(ordersForProccess))
+			log.Println(ordersForProccess)
+
 			for _, order := range ordersForProccess {
+
+				// TODO переписать эту логику
+
 				currentOrder := order
 				updateOrderTask := func(order entity.Order) error {
 					apiResponse, err := uc.webAPI.CheckOrder(ctx, order.OrderNumber)
@@ -183,7 +188,7 @@ backgroundLoop:
 					}
 					log.Println(apiResponse)
 					// TODO не работает =(((
-					// err = uc.repo.UpdateOrder(ctx, apiResponse, order)
+					err = uc.repo.UpdateOrder(ctx, apiResponse, order)
 					if err != nil {
 						uc.l.Error(err)
 						return err

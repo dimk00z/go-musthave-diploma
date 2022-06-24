@@ -43,7 +43,7 @@ func (r *GopherMartRepo) UpdateBalance(ctx context.Context, userID string, balan
 	if err != nil {
 		return fmt.Errorf("GopherMartRepo - UpdateBalance - r.Builder: %w", err)
 	}
-	_, err = r.Pool.Query(ctx, sql, args...)
+	_, err = r.Pool.Exec(ctx, sql, args...)
 	if err != nil {
 		return fmt.Errorf("GopherMartRepo - UpdateBalance - r.Pool: %w", err)
 	}

@@ -26,4 +26,4 @@ workers:
   background_service_timeout: 2
 
 api:
-  accrual_system_address: 'localhost:9000'
+  accrual_system_address: 'http://localhost:9000'

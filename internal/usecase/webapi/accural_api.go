@@ -15,7 +15,7 @@ func (g *GopherMartWebAPI) PostOrderInAccuralService(ctx context.Context, orderN
 	resp, err := client.R().
 		SetHeader("Content-Type", "application/json").
 		SetBody(map[string]interface{}{"order": orderNumber}).
-		Post("http://" + g.cfg.API.AccrualSystemAddress + "/api/orders")
+		Post(g.cfg.API.AccrualSystemAddress + "/api/orders")
 	log.Println("accural service response:", resp)
 	log.Println("response status:", resp.StatusCode())
 
@@ -29,7 +29,7 @@ func (g *GopherMartWebAPI) CheckOrder(ctx context.Context, orderNumber string) (
 	resp, err := client.R().
 		SetHeader("Content-Type", "application/json").
 		SetResult(&response).
-		Get("http://" + g.cfg.API.AccrualSystemAddress + "/api/orders/" + orderNumber)
+		Get(g.cfg.API.AccrualSystemAddress + "/api/orders/" + orderNumber)
 	log.Println("accural service response:", resp)
 	log.Println("response status:", resp.StatusCode())
 	log.Println("response struct:", response)
