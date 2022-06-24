@@ -24,5 +24,14 @@ func (g *GopherMartWebAPI) PostOrderInAccuralService(ctx context.Context, orderN
 
 func (g *GopherMartWebAPI) CheckOrder(ctx context.Context, orderNumber string) (response entity.AccrualSystemResponse, err error) {
 	// TODO add logic
+	client := resty.New()
+	log.Println("orderNumber:", orderNumber)
+	resp, err := client.R().
+		SetHeader("Content-Type", "application/json").
+		SetResult(&response).
+		Get("http://" + g.cfg.API.AccrualSystemAddress + "/api/orders/" + orderNumber)
+	log.Println("accural service response:", resp)
+	log.Println("response status:", resp.StatusCode())
+	log.Println("response struct:", response)
 	return
 }

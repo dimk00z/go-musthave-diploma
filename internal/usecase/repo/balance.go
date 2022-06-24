@@ -3,7 +3,6 @@ package repo
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/Masterminds/squirrel"
 	"github.com/dimk00z/go-musthave-diploma/internal/entity"
@@ -16,8 +15,6 @@ func (r *GopherMartRepo) GetBalance(ctx context.Context, userID string) (balance
 		Where(squirrel.Eq{"user_id": userID}).
 		Limit(1).
 		ToSql()
-
-	log.Println(sql, args)
 
 	rows, err := r.Pool.Query(ctx, sql, args...)
 	if err != nil {
@@ -46,7 +43,10 @@ func (r *GopherMartRepo) UpdateBalance(ctx context.Context, userID string, balan
 	if err != nil {
 		return fmt.Errorf("GopherMartRepo - UpdateBalance - r.Builder: %w", err)
 	}
-	_, err = r.Pool.Query(context.Background(), sql, args...)
+	_, err = r.Pool.Query(ctx, sql, args...)
+	if err != nil {
+		return fmt.Errorf("GopherMartRepo - UpdateBalance - r.Pool: %w", err)
+	}
 	return
 
 }

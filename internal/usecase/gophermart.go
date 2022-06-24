@@ -169,21 +169,30 @@ backgroundLoop:
 				uc.l.Error(err)
 				continue
 			}
+			if len(ordersForProccess) > 0 {
+				log.Println(len(ordersForProccess))
+				log.Println(ordersForProccess)
+			}
 			for _, order := range ordersForProccess {
-				updateOrderTask := func(ctx context.Context) error {
+				currentOrder := order
+				updateOrderTask := func(order entity.Order) error {
 					apiResponse, err := uc.webAPI.CheckOrder(ctx, order.OrderNumber)
 					if err != nil {
 						uc.l.Error(err)
 						return err
 					}
-					err = uc.repo.UpdateOrder(ctx, apiResponse, order)
+					log.Println(apiResponse)
+					// TODO не работает =(((
+					// err = uc.repo.UpdateOrder(ctx, apiResponse, order)
 					if err != nil {
 						uc.l.Error(err)
 						return err
 					}
-					return nil
+					return err
 				}
-				uc.wp.Push(updateOrderTask)
+				uc.wp.Push(func(ctx context.Context) error {
+					return updateOrderTask(currentOrder)
+				})
 			}
 		}
 	}

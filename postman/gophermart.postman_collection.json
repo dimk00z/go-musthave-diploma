@@ -27,22 +27,50 @@
 			"response": []
 		},
 		{
-			"name": "user/orders/single",
+			"name": "External user/orders/single",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/api/user/orders/12345678903",
+					"raw": "http://localhost:9000/api/orders/12345678903",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "8080",
+					"port": "9000",
 					"path": [
 						"api",
-						"user",
 						"orders",
 						"12345678903"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "External user/orders",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"order\": \"12345678903\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9000/api/orders",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"api",
+						"orders"
 					]
 				}
 			},
@@ -126,6 +154,15 @@
 			"request": {
 				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"order\": \"12345678903\",\n    \"sum\": 751\n}",
+					"options": {
+						"raw": {
+							"language": "text"
+						}
+					}
+				},
 				"url": {
 					"raw": "http://localhost:8080/api/user/balance/withdraw",
 					"protocol": "http",
