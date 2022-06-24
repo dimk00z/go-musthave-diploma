@@ -157,21 +157,19 @@ func (uc *GopherMartUseCase) GetWithdrawals(
 
 func (uc *GopherMartUseCase) StartBackgroundService(ctx context.Context, urlAPI string, BackgroundServiceTimeout int) {
 	uc.l.Debug("Background service started")
-	ticker := time.Tick(time.Duration(BackgroundServiceTimeout) * time.Second)
+	ticker := time.NewTicker(time.Duration(BackgroundServiceTimeout) * time.Second)
 backgroundLoop:
 	for {
 		select {
 		case <-ctx.Done():
-			uc.l.Debug("Background service finished")
 			break backgroundLoop
-		case <-ticker:
+		case <-ticker.C:
 			ordersForProccess, err := uc.repo.GetForProccessOrders(ctx)
 			if err != nil {
 				uc.l.Error(err)
 				continue
 			}
 			for _, order := range ordersForProccess {
-				// uc.l.Debug("Background do the job")
 				updateOrderTask := func(ctx context.Context) error {
 					apiResponse, err := uc.webAPI.CheckOrder(ctx, order.OrderNumber)
 					if err != nil {
@@ -189,4 +187,7 @@ backgroundLoop:
 			}
 		}
 	}
+	ticker.Stop()
+	uc.l.Debug("Background service finished")
+
 }
