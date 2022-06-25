@@ -22,7 +22,6 @@ func (g *GopherMartWebAPI) PostOrderInAccuralService(ctx context.Context, orderN
 }
 
 func (g *GopherMartWebAPI) CheckOrder(ctx context.Context, orderNumber string) (response entity.AccrualSystemResponse, err error) {
-	// TODO add logic
 	client := resty.New()
 	resp, err := client.R().
 		SetHeader("Content-Type", "application/json").

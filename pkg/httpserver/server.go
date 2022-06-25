@@ -59,7 +59,5 @@ func (s *Server) Notify() <-chan error {
 
 // Shutdown -.
 func (s *Server) Shutdown(ctx context.Context, cancel context.CancelFunc) error {
-	// defer cancel()
-
 	return s.server.Shutdown(ctx)
 }
