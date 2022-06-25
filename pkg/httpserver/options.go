@@ -2,6 +2,7 @@ package httpserver
 
 import (
 	"net"
+	"strings"
 	"time"
 )
 
@@ -16,6 +17,10 @@ func Port(port string) Option {
 }
 func Addr(addr string) Option {
 	return func(s *Server) {
+		if strings.Contains(addr, "localhost") {
+			s.server.Addr = net.JoinHostPort("", strings.Split(addr, ":")[1])
+			return
+		}
 		s.server.Addr = addr
 	}
 }

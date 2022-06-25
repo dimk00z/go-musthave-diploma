@@ -1,24 +1,21 @@
-FROM golang:alpine 
-
-RUN apk add --no-cache git
-
-# Set the Current Working Directory inside the container
-WORKDIR /app/
-
-# We want to populate the module cache based on the go.{mod,sum} files.
-COPY go.mod .
-COPY go.sum .
-
+# Step 1: Modules caching
+FROM golang:alpine as modules
+COPY go.mod go.sum /modules/
+WORKDIR /modules
 RUN go mod download
 
-COPY . .
+# Step 2: Builder
+FROM golang:alpine as builder
+COPY --from=modules /go/pkg /go/pkg
+COPY . /app
+WORKDIR /app
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
+    go build -o /bin/app ./cmd/gophermart
+# RUN go build -o ./out/app ./cmd/gophermart
 
-# Build the Go app
-RUN go build -o ./out/app ./cmd/gophermart
-
-# This container exposes port 8080 to the outside world
-EXPOSE 8080
-
-# Run the binary program produced by `go install`
-CMD ["./out/app"]
-
+# Step 3: Final
+FROM scratch
+COPY --from=builder /app/config /config
+COPY --from=builder /app/migrations /migrations
+COPY --from=builder /bin/app /app
+CMD ["/app"]
