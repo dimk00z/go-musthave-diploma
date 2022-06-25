@@ -142,8 +142,8 @@ func (uc *GopherMartUseCase) Withdraw(ctx context.Context, userID string, orderN
 	balance.Current = balance.Current - sum
 	balance.Spend += sum
 	err = uc.repo.UpdateBalance(ctx, userID, balance)
-	// TODO add saving Withdraw
-	// err=uc.repo.SaveWithdraw()
+	withdrawalID := uuid.NewV4().String()
+	err = uc.repo.SaveWithdraw(ctx, userID, orderNumber, sum, withdrawalID)
 
 	return
 }

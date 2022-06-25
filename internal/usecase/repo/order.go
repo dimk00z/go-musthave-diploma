@@ -69,7 +69,7 @@ func (r *GopherMartRepo) NewOrder(
 				return
 			}
 		}
-		err = fmt.Errorf("GopherMartRepo - SaveUser - r.Builder: %w", err)
+		err = fmt.Errorf("GopherMartRepo - SaveUser - r.Pool.Exec: %w", err)
 		return
 	}
 	return entity.Order{

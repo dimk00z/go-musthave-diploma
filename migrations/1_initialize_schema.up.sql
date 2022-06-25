@@ -24,11 +24,10 @@ CREATE TABLE IF NOT EXISTS "public"."order" (
     CONSTRAINT fk_tbl_user FOREIGN KEY (user_id) REFERENCES "public"."user"(user_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS withdrawal (
+CREATE TABLE IF NOT EXISTS "public"."withdrawal" (
     withdrawal_id uuid DEFAULT uuid_generate_v4(),
     user_id uuid NOT NULL,
     order_number VARCHAR (50) NOT NULL UNIQUE,
-    status VARCHAR(50) DEFAULT 'NEW',
     processed_at TIMESTAMP,
     withdraw_sum NUMERIC(20, 2) DEFAULT 0,
     CONSTRAINT pk_tbl_withdrawal_id PRIMARY KEY (withdrawal_id),

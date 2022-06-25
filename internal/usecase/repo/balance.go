@@ -50,14 +50,3 @@ func (r *GopherMartRepo) UpdateBalance(ctx context.Context, userID string, balan
 	return
 
 }
-
-func (r *GopherMartRepo) SaveWithdraw(ctx context.Context, userID string, sum int) (err error) {
-	//TODO add Withdraw logic
-
-	return
-}
-func (r *GopherMartRepo) GetWithdrawals(ctx context.Context, userID string) (withdrawals []entity.Withdrawal, err error) {
-	//TODO add Withdraw logic
-
-	return
-}

@@ -37,7 +37,7 @@ type IGopherMartRepo interface {
 	GetBalance(ctx context.Context, userID string) (balance entity.Balance, err error)
 	UpdateBalance(ctx context.Context, userID string, balance entity.Balance) (err error)
 
-	SaveWithdraw(ctx context.Context, userID string, sum int) (err error)
+	SaveWithdraw(ctx context.Context, userID string, orderNumber string, sum float32, withdrawalID string) (err error)
 	GetWithdrawals(ctx context.Context, userID string) (withdrawals []entity.Withdrawal, err error)
 }
 
