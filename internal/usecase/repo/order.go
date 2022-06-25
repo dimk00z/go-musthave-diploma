@@ -160,8 +160,8 @@ func (r *GopherMartRepo) UpdateOrder(ctx context.Context, apiResponse entity.Acc
 		return fmt.Errorf("GopherMartRepo - UpdateOrder - GetBalance: %w", err)
 	}
 	balance.Current += apiResponse.Accrual
-	log.Println(balance)
-	err = r.UpdateBalance(ctx, order.OrderID, balance)
+	log.Println("!!!!!Updated balance", balance)
+	err = r.UpdateBalance(ctx, order.UserID, balance)
 	if err != nil {
 		return fmt.Errorf("GopherMartRepo - UpdateOrder - UpdateBalance: %w", err)
 	}

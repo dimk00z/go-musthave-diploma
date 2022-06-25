@@ -177,8 +177,6 @@ backgroundLoop:
 
 			for _, order := range ordersForProccess {
 
-				// TODO переписать эту логику
-
 				currentOrder := order
 				updateOrderTask := func(order entity.Order) error {
 					apiResponse, err := uc.webAPI.CheckOrder(ctx, order.OrderNumber)
@@ -187,7 +185,6 @@ backgroundLoop:
 						return err
 					}
 					log.Println(apiResponse)
-					// TODO не работает =(((
 					err = uc.repo.UpdateOrder(ctx, apiResponse, order)
 					if err != nil {
 						uc.l.Error(err)
