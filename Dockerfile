@@ -16,6 +16,8 @@ COPY . .
 # Build the Go app
 RUN go build -o ./out/app ./cmd/gophermart
 
+# This container exposes port 8080 to the outside world
+EXPOSE 8080
 
 # Run the binary program produced by `go install`
 CMD ["./out/app"]

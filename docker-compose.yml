@@ -21,8 +21,6 @@ services:
     container_name: gophermart-api-server
     ports:
       - "8080:8080"
-    expose:
-      - 8080
     depends_on:
       - postgresql
     env_file:
