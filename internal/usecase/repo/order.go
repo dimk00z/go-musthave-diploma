@@ -3,7 +3,6 @@ package repo
 import (
 	"context"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/Masterminds/squirrel"
@@ -24,8 +23,6 @@ func (r *GopherMartRepo) GetOrder(ctx context.Context, orderNumber string) (orde
 		err = fmt.Errorf("GopherMartRepo - GetOrder - r.Builder: %w", err)
 		return
 	}
-
-	log.Println(sql, args)
 
 	rows, err := r.Pool.Query(ctx, sql, args...)
 	if err != nil {
@@ -160,7 +157,6 @@ func (r *GopherMartRepo) UpdateOrder(ctx context.Context, apiResponse entity.Acc
 		return fmt.Errorf("GopherMartRepo - UpdateOrder - GetBalance: %w", err)
 	}
 	balance.Current += apiResponse.Accrual
-	log.Println("!!!!!Updated balance", balance)
 	err = r.UpdateBalance(ctx, order.UserID, balance)
 	if err != nil {
 		return fmt.Errorf("GopherMartRepo - UpdateOrder - UpdateBalance: %w", err)

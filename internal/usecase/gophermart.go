@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	"log"
 	"time"
 
 	"github.com/dimk00z/go-musthave-diploma/internal/entity"
@@ -36,7 +35,6 @@ func (uc *GopherMartUseCase) RegisterUser(
 	if err != nil {
 		return
 	}
-	log.Println(userName, hashedPassword)
 	userID := uuid.NewV4().String()
 	user, err = uc.repo.SaveUser(ctx, userID, userName, hashedPassword)
 	if err != nil {
@@ -142,6 +140,9 @@ func (uc *GopherMartUseCase) Withdraw(ctx context.Context, userID string, orderN
 	balance.Current = balance.Current - sum
 	balance.Spend += sum
 	err = uc.repo.UpdateBalance(ctx, userID, balance)
+	if err != nil {
+		return
+	}
 	withdrawalID := uuid.NewV4().String()
 	err = uc.repo.SaveWithdraw(ctx, userID, orderNumber, sum, withdrawalID)
 
@@ -172,8 +173,6 @@ backgroundLoop:
 			if len(ordersForProccess) == 0 {
 				continue
 			}
-			log.Println(len(ordersForProccess))
-			log.Println(ordersForProccess)
 
 			for _, order := range ordersForProccess {
 
@@ -184,7 +183,6 @@ backgroundLoop:
 						uc.l.Error(err)
 						return err
 					}
-					log.Println(apiResponse)
 					err = uc.repo.UpdateOrder(ctx, apiResponse, order)
 					if err != nil {
 						uc.l.Error(err)
