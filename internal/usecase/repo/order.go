@@ -12,7 +12,7 @@ import (
 	"github.com/jackc/pgerrcode"
 )
 
-func (r *GopherMartRepo) GetOrder(ctx context.Context, orderNumber string) (order entity.Order, err error) {
+func (r *GopherMartRepo) GetOrder(ctx context.Context, orderNumber string) (order *entity.Order, err error) {
 	sql, args, err := r.Builder.
 		Select("user_id, order_id, status, uploaded_at, accrual").
 		From("public.order").
@@ -30,16 +30,19 @@ func (r *GopherMartRepo) GetOrder(ctx context.Context, orderNumber string) (orde
 		return
 	}
 	defer rows.Close()
+	e := entity.Order{}
 	for rows.Next() {
-		e := entity.Order{}
 
 		err = rows.Scan(&e.UserID, &e.OrderID, &e.Status, &e.ProcessedAt, &e.Accrual)
 		if err != nil {
 			return order, fmt.Errorf("GopherMartRepo - GetOrder - rows.Scan: %w", err)
 		}
 		e.OrderNumber = orderNumber
-		order = e
 	}
+	if err := rows.Err(); err != nil {
+		return order, fmt.Errorf("GopherMartRepo - GetOrder - rows.Err: %w", err)
+	}
+	order = &e
 	return
 }
 
@@ -83,12 +86,12 @@ func (r *GopherMartRepo) GetOrdersForUser(ctx context.Context, userID string) (o
 		Where(squirrel.Eq{"user_id": userID}).
 		OrderBy("uploaded_at").ToSql()
 	if err != nil {
-		err = fmt.Errorf("GopherMartRepo - GetOrders - r.Builder: %w", err)
+		err = fmt.Errorf("GopherMartRepo - GetOrdersForUser - r.Builder: %w", err)
 		return
 	}
 	rows, err := r.Pool.Query(ctx, sql, args...)
 	if err != nil {
-		err = fmt.Errorf("GopherMartRepo - GetOrders - r.Pool.Query: %w", err)
+		err = fmt.Errorf("GopherMartRepo - GetOrdersForUser - r.Pool.Query: %w", err)
 		return
 	}
 	defer rows.Close()
@@ -97,10 +100,13 @@ func (r *GopherMartRepo) GetOrdersForUser(ctx context.Context, userID string) (o
 
 		err = rows.Scan(&e.OrderID, &e.OrderNumber, &e.Status, &e.ProcessedAt, &e.Accrual)
 		if err != nil {
-			return nil, fmt.Errorf("GopherMartRepo - GetOrders - rows.Scan: %w", err)
+			return nil, fmt.Errorf("GopherMartRepo - GetOrdersForUser - rows.Scan: %w", err)
 		}
 		e.UserID = userID
 		orders = append(orders, e)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("GopherMartRepo - GetOrdersForUser - rows.Err: %w", err)
 	}
 	if len(orders) == 0 {
 		err = usecase.ErrNoOrderFound
@@ -137,6 +143,9 @@ func (r *GopherMartRepo) GetForProccessOrders(ctx context.Context) (orders []ent
 			return nil, fmt.Errorf("GopherMartRepo - GetForProccessOrders - rows.Scan: %w", err)
 		}
 		orders = append(orders, e)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("GopherMartRepo - GetForProccessOrders - rows.Err: %w", err)
 	}
 	return
 }

@@ -66,6 +66,11 @@ func (r *GopherMartRepo) GetUser(
 			return
 		}
 	}
+	err = rows.Err()
+	if err != nil {
+		err = fmt.Errorf("GopherMartRepo - GetUser - rows.Err: %w", err)
+		return
+	}
 	user.Login = userName
 	return
 }
