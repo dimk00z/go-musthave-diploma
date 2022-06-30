@@ -57,5 +57,10 @@ func (r *GopherMartRepo) GetWithdrawals(ctx context.Context, userID string) (wit
 		}
 		withdrawals = append(withdrawals, e)
 	}
+	err = rows.Err()
+	if err != nil {
+		err = fmt.Errorf("GopherMartRepo - GetWithdrawals - rows.Err: %w", err)
+		return
+	}
 	return
 }
