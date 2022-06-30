@@ -51,7 +51,7 @@ func (uc *GopherMartUseCase) Login(
 	if err != nil {
 		return
 	}
-	uc.l.Info("GopherMartUseCase - Login - : " + user.UserID + " " + " " + user.Login)
+	uc.l.Info("GopherMartUseCase - Login - : " + user.UserID + " " + user.Login)
 
 	err = uc.webAPI.VerifyPassword(password, user.Password)
 

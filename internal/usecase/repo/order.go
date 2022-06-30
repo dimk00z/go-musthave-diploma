@@ -48,7 +48,7 @@ func (r *GopherMartRepo) NewOrder(
 	userID, orderID, orderNumber string) (order entity.Order, err error) {
 
 	uploadedAt := time.Now()
-	status := "NEW"
+	status := entity.OrderStatusNew
 	sql, args, err := r.Builder.
 		Insert("public.order").
 		Columns("user_id, order_number, uploaded_at, order_id, status").
@@ -109,7 +109,11 @@ func (r *GopherMartRepo) GetOrdersForUser(ctx context.Context, userID string) (o
 }
 
 func (r *GopherMartRepo) GetForProccessOrders(ctx context.Context) (orders []entity.Order, err error) {
-	statusesForCheck := []string{"NEW", "PROCESSING", "REGISTERED", "PROCESSING"}
+	statusesForCheck := []string{
+		entity.OrderStatusNew,
+		entity.OrderStatusProcessing,
+		entity.OrderStatusRegistered,
+		entity.OrderStatusInvalid}
 	sql, args, err := r.Builder.
 		Select("order_id, user_id, order_number, status, uploaded_at, accrual").
 		From("public.order").
