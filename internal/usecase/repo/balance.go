@@ -18,16 +18,21 @@ func (r *GopherMartRepo) GetBalance(ctx context.Context, userID string) (balance
 
 	rows, err := r.Pool.Query(ctx, sql, args...)
 	if err != nil {
-		err = fmt.Errorf("GopherMartRepo - GetOrder - r.Pool.Query: %w", err)
+		err = fmt.Errorf("GopherMartRepo - GetBalance - r.Pool.Query: %w", err)
 		return
 	}
 	defer rows.Close()
 	for rows.Next() {
 		err = rows.Scan(&balance.Current, &balance.Spend)
 		if err != nil {
-			err = fmt.Errorf("GopherMartRepo - GetUser - rows.Scan: %w", err)
+			err = fmt.Errorf("GopherMartRepo - GetBalance - rows.Scan: %w", err)
 			return
 		}
+	}
+	err = rows.Err()
+	if err != nil {
+		err = fmt.Errorf("GopherMartRepo - GetBalance - rows.Err: %w", err)
+		return
 	}
 	return
 }
