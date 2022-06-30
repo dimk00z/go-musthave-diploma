@@ -76,18 +76,19 @@ func (uc *GopherMartUseCase) NewOrder(ctx context.Context, userID string, orderN
 
 	checkedOrder, err := uc.repo.GetOrder(ctx, orderNumber)
 	uc.l.Debug(checkedOrder)
-	if checkedOrder != (entity.Order{}) {
+	if err != nil {
+		uc.l.Error(err)
+		return
+	}
+	if checkedOrder != nil {
 		if checkedOrder.UserID != userID {
 			err = ErrOrderGotByDifferentUser
 		} else {
 			err = ErrOrderAlreadyGot
 		}
-		return checkedOrder, err
+		return *checkedOrder, err
 	}
-	if err != nil {
-		uc.l.Error(err)
-		return
-	}
+
 	orderID := uuid.NewV4().String()
 	order, err = uc.repo.NewOrder(ctx, userID, orderID, orderNumber)
 
@@ -111,7 +112,7 @@ func (uc *GopherMartUseCase) GetOrdersForUser(ctx context.Context, userID string
 	return orders, err
 }
 func (uc *GopherMartUseCase) GetOrder(ctx context.Context,
-	orderNumber string, userID string) (order entity.Order, err error) {
+	orderNumber string, userID string) (order *entity.Order, err error) {
 	order, err = uc.repo.GetOrder(ctx, orderNumber)
 	if err != nil {
 		return

@@ -15,7 +15,7 @@ type IGopherMart interface {
 
 	NewOrder(ctx context.Context, userID string, orderNumber string) (order entity.Order, err error)
 	GetOrdersForUser(ctx context.Context, userID string) (orders []entity.Order, err error)
-	GetOrder(ctx context.Context, orderNumber string, userID string) (order entity.Order, err error)
+	GetOrder(ctx context.Context, orderNumber string, userID string) (order *entity.Order, err error)
 	GetBalance(ctx context.Context, userID string) (balance entity.Balance, err error)
 
 	Withdraw(ctx context.Context, userID string, orderNumber string, sum float32) (err error)
@@ -30,7 +30,7 @@ type IGopherMartRepo interface {
 
 	NewOrder(ctx context.Context, userID, orderID string, orderNumber string) (order entity.Order, err error)
 	GetOrdersForUser(ctx context.Context, userID string) (orders []entity.Order, err error)
-	GetOrder(ctx context.Context, orderNumber string) (order entity.Order, err error)
+	GetOrder(ctx context.Context, orderNumber string) (order *entity.Order, err error)
 	GetForProccessOrders(ctx context.Context) (orders []entity.Order, err error)
 	UpdateOrder(ctx context.Context, apiResponse entity.AccrualSystemResponse, order entity.Order) (err error)
 

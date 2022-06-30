@@ -12,7 +12,7 @@ import (
 	"github.com/jackc/pgerrcode"
 )
 
-func (r *GopherMartRepo) GetOrder(ctx context.Context, orderNumber string) (order entity.Order, err error) {
+func (r *GopherMartRepo) GetOrder(ctx context.Context, orderNumber string) (order *entity.Order, err error) {
 	sql, args, err := r.Builder.
 		Select("user_id, order_id, status, uploaded_at, accrual").
 		From("public.order").
@@ -38,7 +38,7 @@ func (r *GopherMartRepo) GetOrder(ctx context.Context, orderNumber string) (orde
 			return order, fmt.Errorf("GopherMartRepo - GetOrder - rows.Scan: %w", err)
 		}
 		e.OrderNumber = orderNumber
-		order = e
+		order = &e
 	}
 	return
 }
