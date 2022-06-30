@@ -76,19 +76,18 @@ func (uc *GopherMartUseCase) NewOrder(ctx context.Context, userID string, orderN
 
 	checkedOrder, err := uc.repo.GetOrder(ctx, orderNumber)
 	uc.l.Debug(checkedOrder)
-	if err != nil {
-		uc.l.Error(err)
-		return
-	}
-	if checkedOrder != nil {
+	if checkedOrder != (entity.Order{}) {
 		if checkedOrder.UserID != userID {
 			err = ErrOrderGotByDifferentUser
 		} else {
 			err = ErrOrderAlreadyGot
 		}
-		return *checkedOrder, err
+		return checkedOrder, err
 	}
-
+	if err != nil {
+		uc.l.Error(err)
+		return
+	}
 	orderID := uuid.NewV4().String()
 	order, err = uc.repo.NewOrder(ctx, userID, orderID, orderNumber)
 
@@ -113,11 +112,10 @@ func (uc *GopherMartUseCase) GetOrdersForUser(ctx context.Context, userID string
 }
 func (uc *GopherMartUseCase) GetOrder(ctx context.Context,
 	orderNumber string, userID string) (order entity.Order, err error) {
-	o, err := uc.repo.GetOrder(ctx, orderNumber)
+	order, err = uc.repo.GetOrder(ctx, orderNumber)
 	if err != nil {
 		return
 	}
-	order = *o
 	return
 }
 
@@ -161,7 +159,6 @@ func (uc *GopherMartUseCase) GetWithdrawals(
 func (uc *GopherMartUseCase) StartBackgroundService(ctx context.Context, urlAPI string, BackgroundServiceTimeout int) {
 	uc.l.Debug("Background service started")
 	ticker := time.NewTicker(time.Duration(BackgroundServiceTimeout) * time.Second)
-	defer ticker.Stop()
 backgroundLoop:
 	for {
 		select {
@@ -199,5 +196,7 @@ backgroundLoop:
 			}
 		}
 	}
+	ticker.Stop()
 	uc.l.Debug("Background service finished")
+
 }
