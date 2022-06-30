@@ -159,6 +159,7 @@ func (uc *GopherMartUseCase) GetWithdrawals(
 func (uc *GopherMartUseCase) StartBackgroundService(ctx context.Context, urlAPI string, BackgroundServiceTimeout int) {
 	uc.l.Debug("Background service started")
 	ticker := time.NewTicker(time.Duration(BackgroundServiceTimeout) * time.Second)
+	defer ticker.Stop()
 backgroundLoop:
 	for {
 		select {
@@ -196,7 +197,6 @@ backgroundLoop:
 			}
 		}
 	}
-	ticker.Stop()
 	uc.l.Debug("Background service finished")
 
 }
