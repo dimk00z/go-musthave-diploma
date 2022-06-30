@@ -39,9 +39,9 @@ func (r *GopherMartRepo) GetOrder(ctx context.Context, orderNumber string) (orde
 		}
 		e.OrderNumber = orderNumber
 	}
-	if err := rows.Err(); err != nil {
-		return order, fmt.Errorf("GopherMartRepo - GetOrder - rows.Err: %w", err)
-	}
+	// if err := rows.Err(); err != nil {
+	// 	return order, fmt.Errorf("GopherMartRepo - GetOrder - rows.Err: %w", err)
+	// }
 	order = &e
 	return
 }
@@ -105,9 +105,9 @@ func (r *GopherMartRepo) GetOrdersForUser(ctx context.Context, userID string) (o
 		e.UserID = userID
 		orders = append(orders, e)
 	}
-	if err := rows.Err(); err != nil {
-		return nil, fmt.Errorf("GopherMartRepo - GetOrdersForUser - rows.Err: %w", err)
-	}
+	// if err := rows.Err(); err != nil {
+	// 	return nil, fmt.Errorf("GopherMartRepo - GetOrdersForUser - rows.Err: %w", err)
+	// }
 	if len(orders) == 0 {
 		err = usecase.ErrNoOrderFound
 	}
@@ -144,9 +144,9 @@ func (r *GopherMartRepo) GetForProccessOrders(ctx context.Context) (orders []ent
 		}
 		orders = append(orders, e)
 	}
-	if err := rows.Err(); err != nil {
-		return nil, fmt.Errorf("GopherMartRepo - GetForProccessOrders - rows.Err: %w", err)
-	}
+	// if err := rows.Err(); err != nil {
+	// 	return nil, fmt.Errorf("GopherMartRepo - GetForProccessOrders - rows.Err: %w", err)
+	// }
 	return
 }
 
