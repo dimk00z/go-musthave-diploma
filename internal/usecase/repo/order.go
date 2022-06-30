@@ -40,6 +40,9 @@ func (r *GopherMartRepo) GetOrder(ctx context.Context, orderNumber string) (orde
 		e.OrderNumber = orderNumber
 		order = &e
 	}
+	if err = rows.Err(); err != nil {
+		return nil, fmt.Errorf("GopherMartRepo - GetOrder - rows.Err: %w", err)
+	}
 	return
 }
 
