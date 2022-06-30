@@ -29,11 +29,11 @@ func (r *GopherMartRepo) GetBalance(ctx context.Context, userID string) (balance
 			return
 		}
 	}
-	// err = rows.Err()
-	// if err != nil {
-	// 	err = fmt.Errorf("GopherMartRepo - GetBalance - rows.Err: %w", err)
-	// 	return
-	// }
+	err = rows.Err()
+	if err != nil {
+		err = fmt.Errorf("GopherMartRepo - GetBalance - rows.Err: %w", err)
+		return
+	}
 	return
 }
 
