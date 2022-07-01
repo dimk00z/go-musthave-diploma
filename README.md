@@ -23,3 +23,17 @@ git fetch template && git checkout template/master .github
 ```
 
 Затем добавьте полученные изменения в свой репозиторий.
+
+# Описание решения
+
+## Архитектура
+
+Для струкрутры проекта выбрал шаблон от `Evrone` [evrone/go-clean-template](https://github.com/evrone/go-clean-template), который мне видится очень локаничным и максимально логичным при разделении логики приложения.
+
+
+## Запуск 
+
+```
+cp .env_sample .env
+docker-compose up
+```

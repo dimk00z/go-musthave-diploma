@@ -1,3 +1,16 @@
 package main
 
-func main() {}
+import (
+	"github.com/dimk00z/go-musthave-diploma/config"
+	"github.com/dimk00z/go-musthave-diploma/internal/app"
+	"github.com/dimk00z/go-musthave-diploma/pkg/logger"
+)
+
+func main() {
+	// Configuration
+	cfg := config.NewConfig()
+	l := logger.New(cfg.Log.Level)
+	l.Debug(cfg)
+	// Run
+	app.Run(cfg, l)
+}
